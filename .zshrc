@@ -38,3 +38,5 @@ ZSH_THEME="robbyrussell"
 plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
+
+. /usr/local/etc/profile.d/z.sh
