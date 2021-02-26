@@ -39,4 +39,13 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-. /usr/local/etc/profile.d/z.sh
+# brew install z
+[ -f /usr/local/etc/profile.d/z.sh ] && . /usr/local/etc/profile.d/z.sh
+
+# ASDF
+[ -f /usr/local/opt/asdf/asdf.sh ] && . /usr/local/opt/asdf/asdf.sh
+[ -f /usr/local/opt/asdf/etc/bash_completion.d/asdf.bash ] && . /usr/local/opt/asdf/etc/bash_completion.d/asdf.bash
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export PATH="/usr/local/sbin:$PATH"
