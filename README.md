@@ -1,4 +1,9 @@
 # Dotfiles
 
-TODO:
-- add things
+```
+$ ./brew.sh
+```
+
+```
+$ ./setup.sh
+```
