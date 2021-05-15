@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Install command-line tools using Homebrew.
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Make sure we’re using the latest Homebrew.
 brew update
@@ -21,13 +22,11 @@ brew install moreutils
 # Install GNU `find`, `locate`, `updatedb`, and `xargs`, `g`-prefixed.
 brew install findutils
 
+# Bash things
 brew install bash
 brew install bash-completion2
-
-brew install zsh
+brew install fzf
 brew install z
-
-chsh -s "/bin/zsh";
 
 ## Install `wget` with IRI support.
 brew install wget 
@@ -44,15 +43,6 @@ brew install openssh
 brew install screen
 brew install gmp
 brew install rg
-
-## Install font tools.
-brew tap bramstein/webfonttools
-brew install sfnt2woff
-brew install sfnt2woff-zopfli
-brew install woff2
-
-# Neovim
-brew install neovim --HEAD
 
 ## Remove outdated versions from the cellar.
 brew cleanup
