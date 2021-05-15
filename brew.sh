@@ -44,5 +44,8 @@ brew install screen
 brew install gmp
 brew install rg
 
+## Things
+brew install asdf
+
 ## Remove outdated versions from the cellar.
 brew cleanup
