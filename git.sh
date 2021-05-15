@@ -3,6 +3,8 @@
 GIT_USER=troy.martin
 GIT_EMAIL=troy@devato.com
 
+git config pull.rebase false
+
 # Ignore all DS_Store files
 echo .DS_Store >> ~/.gitignore_global
 git config --global core.excludesfile ~/.gitignore_global

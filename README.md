@@ -21,4 +21,6 @@ $ make copy-files
 
 ## Iterm2
 
-Load profile from `iterm2/devato.json`
+1. Load profile from `iterm2/devato.json`
+2. Preferences -> Appearance -> General -> Theme -> Minimal
+3. BG Color: 2B2D36
