@@ -51,5 +51,8 @@ brew install sfnt2woff
 brew install sfnt2woff-zopfli
 brew install woff2
 
+# Neovim
+brew install neovim --HEAD
+
 ## Remove outdated versions from the cellar.
 brew cleanup
