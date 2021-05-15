@@ -10,7 +10,10 @@ function doIt() {
 		--exclude ".DS_Store" \
 		--exclude ".osx" \
 		--exclude "brew.sh" \
-		--exclude "setup.sh" \
+		--exclude "asdf.sh" \
+		--exclude "git.sh" \
+		--exclude "copy-files.sh" \
+		--exclude ".tool-versions" \
 		--exclude "README.md" \
 		--exclude "LICENSE-MIT.txt" \
 		-avh --no-perms . ~;
