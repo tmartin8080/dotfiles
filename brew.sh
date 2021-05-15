@@ -44,8 +44,10 @@ brew install screen
 brew install gmp
 brew install rg
 
-## Things
+## Languages
 brew install asdf
+brew install gpg 
+brew install gawk
 
 ## Remove outdated versions from the cellar.
 brew cleanup
