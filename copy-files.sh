@@ -4,8 +4,6 @@ cd "$(dirname "${BASH_SOURCE}")";
 
 git pull origin master;
 
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
 function doIt() {
 	rsync --exclude ".git/" \
 		--exclude ".gitignore" \

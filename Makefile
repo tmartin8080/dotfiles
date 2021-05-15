@@ -1,10 +1,12 @@
 .PHONY: install
-install: brew asdf copy-files
+install: brew git asdf copy-files
 
 .PHONY: brew
 brew: 
 	./brew.sh
 asdf: 
 	./asdf.sh
+git: 
+	./git.sh
 copy-files: 
 	./copy-files.sh
