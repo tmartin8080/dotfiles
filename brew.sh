@@ -43,6 +43,7 @@ brew install openssh
 brew install screen
 brew install gmp
 brew install rg
+brew install fd
 
 ## Languages
 brew install asdf
