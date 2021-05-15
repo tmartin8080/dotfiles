@@ -6,9 +6,9 @@ set autoread
 au CursorHold * checktime
 autocmd InsertEnter,InsertLeave * set cul!
 set nocompatible
+syntax on
 filetype plugin indent on
 set laststatus=2
-syntax on
 set wildmenu
 set nu
 set nowrap
@@ -20,9 +20,11 @@ if (has("termguicolors"))
   set termguicolors
 endif
 
-nnoremap <Leader>r :RunInInteractiveShell<Space>
-nnoremap <silent> <F4> :set cursorline! <CR>
+" nnoremap <Leader>r :RunInInteractiveShell<Space>
+" nnoremap <silent> <F4> :set cursorline! <CR>
 inoremap jk <esc>
+nnoremap <silent> <CR> :nohlsearch<CR><CR>
+
 autocmd BufWritePost *.exs,*.ex silent :!mix format %
 
 " =============================================================================
@@ -37,6 +39,7 @@ set undodir=.undo/,~/.undo/,/tmp//
 " =============================================================================
 call plug#begin('~/.config/nvim/autoload/plugged')
 
+  Plug 'tpope/vim-sensible'
   Plug 'sainnhe/edge'
   Plug 'scrooloose/nerdtree'
   Plug 'kyazdani42/nvim-web-devicons'
@@ -48,19 +51,24 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'jiangmiao/auto-pairs'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-endwise'
-  Plug 'tpope/vim-commentary'               " Comments
-  Plug 'neovim/nvim-lspconfig'
-  Plug 'nvim-lua/completion-nvim'
-  Plug 'elixir-editors/vim-elixir'
-  Plug 'SirVer/ultisnips'
-  Plug 'honza/vim-snippets'
+  Plug 'tpope/vim-commentary'               
   Plug 'machakann/vim-highlightedyank'
   Plug 'terryma/vim-multiple-cursors'
   Plug 'mattn/emmet-vim'
-  Plug 'slashmili/alchemist.vim'
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'nvim-lua/completion-nvim'
+  Plug 'elixir-editors/vim-elixir'
+  Plug 'mhinz/vim-mix-format'
+  Plug 'SirVer/ultisnips'
   Plug '/usr/local/opt/fzf'
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
+  Plug 'vim-ruby/vim-ruby'
+  Plug 'hashivim/vim-terraform'
+  Plug 'skanehira/docker-compose.vim'
+  Plug 'voldikss/vim-floaterm'
+  Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+  Plug 'Joorem/vim-haproxy'
 
 call plug#end()
 
@@ -159,25 +167,37 @@ au FileType html     let b:AutoPairs = AutoPairsDefine({'<%=' : '%>', '<%': '%>'
 
 " =============================================================================
 " nvim-lsp
+" 
+" INSTALL elixir-ls:
+" rm -rf ~/.elixir-ls
+" curl -fLO https://github.com/elixir-lsp/elixir-ls/releases/download/v0.7.0/elixir-ls-1.11.zip
+" unzip elixir-ls-1.11.zip -d ~/.elixir-ls
+" chmod +x ~/.elixir-ls/language_server.sh
 "
 " :checkhealth
 "
 " https://github.com/neovim/nvim-lspconfig/blob/a21a509417aa530fb7b54020f590fa5ccc67de77/CONFIG.md#elixirls
+" 
+" Keybinging & Complettion:
+" https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
 "
 " Debug LS:
 " 1. :lua print(vim.lsp.get_log_path())
 " 2. tail -f ~/.cache/nvim/lsp.log
 " 3. Open language file project and see what happens
 " =============================================================================
+nnoremap <silent><space>D <cmd>lua vim.lsp.buf.type_definition()<CR>
+nnoremap <silent><space>f <cmd>lua vim.lsp.buf.formatting()<CR>
 nnoremap <silent>gd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent>gr <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent>K  <cmd>lua vim.lsp.buf.hover()<CR>
 " method textDocument/rename is not supported by any of the servers registered for the current buffer
 nnoremap <silent>rn <cmd>lua vim.lsp.buf.rename()<CR>
 
+" must be absolute path to language server script
 lua << END
   require'lspconfig'.elixirls.setup{
-    cmd = { "/Users/mac/.elixir-ls/release/language_server.sh" };
+    cmd = { "/Users/mac/.elixir-ls/language_server.sh" };
   }
 END
 
@@ -235,5 +255,15 @@ function! CleverTab()
 endfunction
 inoremap <Tab> <C-R>=CleverTab()<CR>
 
-
 autocmd BufEnter * lua require'completion'.on_attach()
+" let g:mix_format_elixir_bin_path = '~/.asdf/installs/elixir/1.11.3/bin'
+
+" =============================================================================
+" https://github.com/skanehira/docker-compose.vim
+" =============================================================================
+" let g:docker_compose_open_terminal_way = 'top'
+
+" =============================================================================
+" https://github.com/iamcco/markdown-preview.nvim
+" =============================================================================
+" nmap <C-p> <Plug>MarkdownPreviewToggle
