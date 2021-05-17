@@ -51,7 +51,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'jiangmiao/auto-pairs'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-endwise'
-  Plug 'tpope/vim-commentary'               
+  Plug 'tpope/vim-commentary'
   Plug 'machakann/vim-highlightedyank'
   Plug 'terryma/vim-multiple-cursors'
   Plug 'mattn/emmet-vim'
@@ -69,6 +69,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'voldikss/vim-floaterm'
   Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
   Plug 'Joorem/vim-haproxy'
+  Plug 'ntpeters/vim-better-whitespace'
 
 call plug#end()
 
@@ -110,7 +111,7 @@ if !exists('g:NERDTreeAutoDeleteBuffer')
 endif
 
 " =============================================================================
-" Lightline 
+" Lightline
 " https://github.com/itchyny/lightline.vim
 " =============================================================================
 let g:lightline = {}
@@ -167,7 +168,7 @@ au FileType html     let b:AutoPairs = AutoPairsDefine({'<%=' : '%>', '<%': '%>'
 
 " =============================================================================
 " nvim-lsp
-" 
+"
 " INSTALL elixir-ls:
 " rm -rf ~/.elixir-ls
 " curl -fLO https://github.com/elixir-lsp/elixir-ls/releases/download/v0.7.0/elixir-ls-1.11.zip
@@ -177,7 +178,7 @@ au FileType html     let b:AutoPairs = AutoPairsDefine({'<%=' : '%>', '<%': '%>'
 " :checkhealth
 "
 " https://github.com/neovim/nvim-lspconfig/blob/a21a509417aa530fb7b54020f590fa5ccc67de77/CONFIG.md#elixirls
-" 
+"
 " Keybinging & Complettion:
 " https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
 "
@@ -267,3 +268,10 @@ autocmd BufEnter * lua require'completion'.on_attach()
 " https://github.com/iamcco/markdown-preview.nvim
 " =============================================================================
 " nmap <C-p> <Plug>MarkdownPreviewToggle
+"
+" =============================================================================
+" https://github.com/ntpeters/vim-better-whitespace
+" =============================================================================
+let g:better_whitespace_enabled=1
+let g:strip_whitespace_on_save=1
+let g:strip_whitespace_confirm=0
