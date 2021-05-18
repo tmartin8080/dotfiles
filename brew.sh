@@ -29,9 +29,9 @@ brew install fzf
 brew install z
 
 ## Install `wget` with IRI support.
-brew install wget 
-brew install curl 
-brew install git 
+brew install wget
+brew install curl
+brew install git
 
 ## Install GnuPG to enable PGP-signing commits.
 brew install gnupg
@@ -44,10 +44,11 @@ brew install screen
 brew install gmp
 brew install rg
 brew install fd
+brew install ldns
 
 ## Languages
 brew install asdf
-brew install gpg 
+brew install gpg
 brew install gawk
 
 ## Remove outdated versions from the cellar.
