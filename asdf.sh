@@ -9,6 +9,7 @@ asdf install python $PYTHON_VERSION
 asdf global python $PYTHON_VERSION
 asdf local python $PYTHON_VERSION
 asdf reshim python
+pip install --user neovim
 
 asdf plugin-add erlang
 asdf install erlang $ERLANG_VERSION
