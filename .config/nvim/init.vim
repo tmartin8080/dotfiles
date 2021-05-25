@@ -1,4 +1,4 @@
-" =============================================================================
+ " =============================================================================
 " Interface
 " =============================================================================
 set autoread
@@ -39,7 +39,9 @@ set undodir=.undo/,~/.undo/,/tmp//
 " =============================================================================
 call plug#begin('~/.config/nvim/autoload/plugged')
 
+  Plug 'tpope/vim-abolish'
   Plug 'tpope/vim-sensible'
+  Plug 'tpope/vim-ragtag'
   Plug 'sainnhe/edge'
   Plug 'scrooloose/nerdtree'
   Plug 'kyazdani42/nvim-web-devicons'
@@ -55,11 +57,13 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'machakann/vim-highlightedyank'
   Plug 'terryma/vim-multiple-cursors'
   Plug 'mattn/emmet-vim'
+  Plug 'gregsexton/MatchTag', { 'for': 'html' }
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-lua/completion-nvim'
   Plug 'elixir-editors/vim-elixir'
   Plug 'mhinz/vim-mix-format'
   Plug 'SirVer/ultisnips'
+  Plug 'honza/vim-snippets'
   Plug '/usr/local/opt/fzf'
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
@@ -67,9 +71,15 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'hashivim/vim-terraform'
   Plug 'skanehira/docker-compose.vim'
   Plug 'voldikss/vim-floaterm'
-  Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
   Plug 'Joorem/vim-haproxy'
   Plug 'ntpeters/vim-better-whitespace'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+  " single/multi line code handler: gS - split one line into multiple, gJ - combine multiple lines into one
+  Plug 'AndrewRadev/splitjoin.vim'
+  Plug 'tpope/vim-markdown', { 'for': 'markdown' }
+  " Open markdown files in Marked.app - mapped to <leader>m
+  Plug 'itspriddle/vim-marked', { 'for': 'markdown', 'on': 'MarkedOpen' }
+  Plug 'ekalinin/Dockerfile.vim'
 
 call plug#end()
 
@@ -212,6 +222,9 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 "
 " =============================================================================
 let g:completion_enable_snippet = 'UltiSnips'
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 " =============================================================================
 " fzf
@@ -275,3 +288,11 @@ autocmd BufEnter * lua require'completion'.on_attach()
 let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
 let g:strip_whitespace_confirm=0
+
+" =============================================================================
+" markdown
+" =============================================================================
+let g:markdown_fenced_languages = [ 'tsx=typescript.tsx' ]
+nmap <leader>m :MarkedOpen!<cr>
+nmap <leader>mq :MarkedQuit<cr>
+nmap <leader>* *<c-o>:%s///gn<cr>
