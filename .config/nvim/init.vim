@@ -1,4 +1,4 @@
- " =============================================================================
+" =============================================================================
 " Interface
 " =============================================================================
 set autoread
@@ -7,7 +7,8 @@ au CursorHold * checktime
 autocmd InsertEnter,InsertLeave * set cul!
 set nocompatible
 syntax on
-filetype plugin indent on
+" not necessary on nvim
+" filetype plugin indent on
 set laststatus=2
 set wildmenu
 set nu
@@ -50,7 +51,6 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'macthecadillac/lightline-gitdiff'
   Plug 'ackyshake/vim-fist'                 " Gist handling
   Plug 'djoshea/vim-autoread'               " Auto read edited file
-  Plug 'jiangmiao/auto-pairs'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-endwise'
   Plug 'tpope/vim-commentary'
@@ -58,8 +58,12 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'terryma/vim-multiple-cursors'
   Plug 'mattn/emmet-vim'
   Plug 'gregsexton/MatchTag', { 'for': 'html' }
+  " LSP
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-lua/completion-nvim'
+  Plug 'kabouzeid/nvim-lspinstall'
+
+  " Elixir
   Plug 'elixir-editors/vim-elixir'
   Plug 'mhinz/vim-mix-format'
   Plug 'SirVer/ultisnips'
@@ -74,12 +78,15 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'Joorem/vim-haproxy'
   Plug 'ntpeters/vim-better-whitespace'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+  " :TSInstall query
+  " :TSPlaygroundToggle
+  Plug 'nvim-treesitter/playground'
   " single/multi line code handler: gS - split one line into multiple, gJ - combine multiple lines into one
   Plug 'AndrewRadev/splitjoin.vim'
   Plug 'tpope/vim-markdown', { 'for': 'markdown' }
   " Open markdown files in Marked.app - mapped to <leader>m
   Plug 'itspriddle/vim-marked', { 'for': 'markdown', 'on': 'MarkedOpen' }
-  Plug 'ekalinin/Dockerfile.vim'
+  Plug 'windwp/nvim-autopairs'
 
 call plug#end()
 
@@ -167,30 +174,34 @@ let g:lightline_gitdiff#min_winwidth = '70'
 autocmd FileType apache setlocal commentstring=#\ %s
 
 " =============================================================================
-" auto-pairs
+" autopairs
 "
-" https://github.com/jiangmiao/auto-pairs
+" https://github.com/windwp/nvim-autopairs
 " =============================================================================
-" When the filetype is FILETYPE then make AutoPairs only match for parenthesis
-au Filetype FILETYPE let b:AutoPairs = {"(": ")"}
-au FileType php      let b:AutoPairs = AutoPairsDefine({'<?' : '?>', '<?php': '?>'})
-au FileType html     let b:AutoPairs = AutoPairsDefine({'<%=' : '%>', '<%': '%>'})
+lua << END
+  require('nvim-autopairs').setup()
+END
 
 " =============================================================================
 " nvim-lsp
 "
-" INSTALL elixir-ls:
+" Outdated: INSTALL elixir-ls:
 " rm -rf ~/.elixir-ls
 " curl -fLO https://github.com/elixir-lsp/elixir-ls/releases/download/v0.7.0/elixir-ls-1.11.zip
 " unzip elixir-ls-1.11.zip -d ~/.elixir-ls
 " chmod +x ~/.elixir-ls/language_server.sh
 "
+" New: using 'kabouzeid/nvim-lspinstall'
+" :LspInstall elixir | efm | xxx
+"
 " :checkhealth
 "
 " https://github.com/neovim/nvim-lspconfig/blob/a21a509417aa530fb7b54020f590fa5ccc67de77/CONFIG.md#elixirls
 "
-" Keybinging & Complettion:
+" Keybinging & Completion:
 " https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
+"
+" EFM: install with nvim-lspinstall
 "
 " Debug LS:
 " 1. :lua print(vim.lsp.get_log_path())
@@ -207,9 +218,30 @@ nnoremap <silent>rn <cmd>lua vim.lsp.buf.rename()<CR>
 
 " must be absolute path to language server script
 lua << END
-  require'lspconfig'.elixirls.setup{
-    cmd = { "/Users/mac/.elixir-ls/language_server.sh" };
-  }
+  local function setup_servers()
+
+    local lspinstall = require'lspinstall'
+    lspinstall.setup()
+
+    local servers = lspinstall.installed_servers()
+    local lspconfig = require'lspconfig'
+
+    for _, server in pairs(servers) do
+      lspconfig[server].setup({
+        capabilities = capabilities,
+        on_attach = on_attach
+      })
+    end
+  end
+
+  setup_servers()
+
+  -- Automatically reload after `:LspInstall <server>` so we don't have to restart neovim
+  require'lspinstall'.post_install_hook = function ()
+    setup_servers() -- reload installed servers
+    vim.cmd("bufdo e") -- this triggers the FileType autocmd that starts the server
+  end
+
 END
 
 " Completion
@@ -270,7 +302,6 @@ endfunction
 inoremap <Tab> <C-R>=CleverTab()<CR>
 
 autocmd BufEnter * lua require'completion'.on_attach()
-" let g:mix_format_elixir_bin_path = '~/.asdf/installs/elixir/1.11.3/bin'
 
 " =============================================================================
 " https://github.com/skanehira/docker-compose.vim
@@ -296,3 +327,8 @@ let g:markdown_fenced_languages = [ 'tsx=typescript.tsx' ]
 nmap <leader>m :MarkedOpen!<cr>
 nmap <leader>mq :MarkedQuit<cr>
 nmap <leader>* *<c-o>:%s///gn<cr>
+
+" =============================================================================
+" Plug 'elixir-editors/vim-elixir'
+" =============================================================================
+let g:eelixir_default_subtype = "html"
