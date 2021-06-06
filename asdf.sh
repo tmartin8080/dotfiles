@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 PYTHON_VERSION=3.9.5
-ERLANG_VERSION=24.0.1
-ELIXIR_VERSION=1.12.0-otp-24
+ERLANG_VERSION=24.0.2
+ELIXIR_VERSION=1.12.1-otp-24
+NEOVIM_VERSION=nightly
 
 asdf plugin-add python
 asdf install python $PYTHON_VERSION
@@ -22,3 +23,8 @@ asdf install elixir $ELIXIR_VERSION
 asdf global elixir $ELIXIR_VERSION
 asdf local elixir $ELIXIR_VERSION
 asdf reshim elixir
+
+asdf plugin add neovim
+asdf install neovim $NEOVIM_VERSION
+asdf global neovim $NEOVIM_VERSION
+asdf reshim neovim
