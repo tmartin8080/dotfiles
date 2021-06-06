@@ -37,7 +37,6 @@ brew install git
 brew install gnupg
 
 ## Install more recent versions of some macOS tools.
-brew install --HEAD neovim
 brew install grep
 brew install openssh
 brew install screen
@@ -47,9 +46,10 @@ brew install fd
 brew install ldns
 
 ## Languages
-brew install asdf
 brew install gpg
 brew install gawk
+## Used for running credo
+brew install efm-langserver
 
 ## Remove outdated versions from the cellar.
 brew cleanup

@@ -24,3 +24,10 @@ $ make copy-files
 1. Load profile from `iterm2/devato.json`
 2. Preferences -> Appearance -> General -> Theme -> Minimal
 3. BG Color: 2B2D36
+
+## Language Servers
+
+From within nvim:
+```
+:LspInstall bash
+```

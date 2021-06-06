@@ -4,6 +4,7 @@ PYTHON_VERSION=3.9.5
 ERLANG_VERSION=24.0.2
 ELIXIR_VERSION=1.12.1-otp-24
 NEOVIM_VERSION=nightly
+GOLANG_VERSION=1.16.5
 
 asdf plugin-add python
 asdf install python $PYTHON_VERSION
@@ -28,3 +29,9 @@ asdf plugin add neovim
 asdf install neovim $NEOVIM_VERSION
 asdf global neovim $NEOVIM_VERSION
 asdf reshim neovim
+
+asdf plugin add golang
+asdf install golang $GOLANG_VERSION
+asdf global golang $GOLANG_VERSION
+asdf reshim golang
+
