@@ -30,4 +30,6 @@ $ make copy-files
 From within nvim:
 ```
 :LspInstall bash
+:LspInstall elixir
+:LspInstall efm
 ```
