@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 
-PYTHON_VERSION=3.9.5
+PYTHON3_VERSION=3.9.5
+PYTHON_VERSION=2.7.18
 ERLANG_VERSION=24.0.2
 ELIXIR_VERSION=1.12.1-otp-24
 NEOVIM_VERSION=nightly
 GOLANG_VERSION=1.16.5
 
 asdf plugin-add python
+asdf install python $PYTHON3_VERSION
 asdf install python $PYTHON_VERSION
-asdf global python $PYTHON_VERSION
-asdf local python $PYTHON_VERSION
+asdf global python $PYTHON3_VERSION $PYTHON_VERSION
 asdf reshim python
 pip install --user neovim
 
