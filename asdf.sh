@@ -6,6 +6,7 @@ ERLANG_VERSION=24.0.2
 ELIXIR_VERSION=1.12.1-otp-24
 NEOVIM_VERSION=nightly
 GOLANG_VERSION=1.16.5
+TERRAFORM_VERSION=1.0.1
 
 asdf plugin-add python
 asdf install python $PYTHON3_VERSION
@@ -36,3 +37,7 @@ asdf install golang $GOLANG_VERSION
 asdf global golang $GOLANG_VERSION
 asdf reshim golang
 
+asdf plugin-add terraform https://github.com/asdf-community/asdf-hashicorp.git
+asdf install terraform $TERRAFORM_VERSION
+asdf global terraform $TERRAFORM_VERSION
+asdf reshim terraform
