@@ -7,6 +7,8 @@ ELIXIR_VERSION=1.12.1-otp-24
 NEOVIM_VERSION=nightly
 GOLANG_VERSION=1.16.5
 TERRAFORM_VERSION=1.0.1
+KUBECTL_VERSION=1.21.2
+HELM_VERSION=3.6.1
 
 asdf plugin-add python
 asdf install python $PYTHON3_VERSION
@@ -41,3 +43,13 @@ asdf plugin-add terraform https://github.com/asdf-community/asdf-hashicorp.git
 asdf install terraform $TERRAFORM_VERSION
 asdf global terraform $TERRAFORM_VERSION
 asdf reshim terraform
+
+asdf plugin-add kubectl https://github.com/asdf-community/asdf-kubectl.git
+asdf install kubectl $KUBECTL_VERSION
+asdf global kubectl $KUBECTL_VERSION
+asdf reshim kubectl
+
+asdf plugin-add helm https://github.com/Antiarchitect/asdf-helm.git
+asdf install helm $HELM_VERSION
+asdf global helm $HELM_VERSION
+asdf reshim helm
