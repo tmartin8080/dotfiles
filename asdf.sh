@@ -14,8 +14,10 @@ asdf plugin-add python
 asdf install python $PYTHON3_VERSION
 asdf install python $PYTHON_VERSION
 asdf global python $PYTHON3_VERSION $PYTHON_VERSION
+asdf local python $PYTHON3_VERSION $PYTHON_VERSION
 asdf reshim python
 pip install --user neovim
+pip2 install --user neovim
 
 asdf plugin-add erlang
 asdf install erlang $ERLANG_VERSION
