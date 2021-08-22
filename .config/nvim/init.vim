@@ -1,4 +1,4 @@
-" =============================================================================
+ " =============================================================================
 " Interface
 " =============================================================================
 set autoread
@@ -66,6 +66,9 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   " Elixir
   Plug 'elixir-editors/vim-elixir'
   Plug 'mhinz/vim-mix-format'
+  Plug 'slime-lang/vim-slime-syntax'
+
+  " Other
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
   Plug '/usr/local/opt/fzf'
@@ -77,10 +80,10 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'voldikss/vim-floaterm'
   Plug 'Joorem/vim-haproxy'
   Plug 'ntpeters/vim-better-whitespace'
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+  " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
   " :TSInstall query
   " :TSPlaygroundToggle
-  Plug 'nvim-treesitter/playground'
+  " Plug 'nvim-treesitter/playground'
   " single/multi line code handler: gS - split one line into multiple, gJ - combine multiple lines into one
   Plug 'AndrewRadev/splitjoin.vim'
   Plug 'tpope/vim-markdown', { 'for': 'markdown' }
@@ -119,6 +122,8 @@ call add(NERDTreeIgnore, 'node_modules$[[dir]]')
 call add(NERDTreeIgnore, '_build$[[dir]]')
 call add(NERDTreeIgnore, 'deps$[[dir]]')
 call add(NERDTreeIgnore, '.elixir_ls$[[dir]]')
+call add(NERDTreeIgnore, '.pytest_cache$[[dir]]')
+call add(NERDTreeIgnore, '__pycache__$[[dir]]')
 let NERDTreeShowHidden=1
 let NERDTreeQuitOnOpen=1
 
