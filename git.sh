@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-GIT_USER=troy.martin
+GIT_USER=tmartin8080
 GIT_EMAIL=troy@devato.com
 
 git config pull.rebase false
