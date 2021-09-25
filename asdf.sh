@@ -32,7 +32,7 @@ asdf local elixir $ELIXIR_VERSION
 asdf reshim elixir
 
 asdf plugin add neovim
-asdf install neovim $NEOVIM_VERSION
+asdf install neovim ref:master
 asdf global neovim $NEOVIM_VERSION
 asdf reshim neovim
 
