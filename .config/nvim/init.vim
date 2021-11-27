@@ -31,6 +31,8 @@ autocmd BufWritePost *.exs,*.ex silent :!mix format %
 " =============================================================================
 " Swp and temp files
 " =============================================================================
+set nobackup
+set nowritebackup
 set backupdir=.backup/,~/.backup/,/tmp//
 set directory=.swp/,~/.swp/,/tmp//
 set undodir=.undo/,~/.undo/,/tmp//
@@ -190,12 +192,6 @@ END
 " =============================================================================
 " nvim-lsp
 "
-" Outdated: INSTALL elixir-ls:
-" rm -rf ~/.elixir-ls
-" curl -fLO https://github.com/elixir-lsp/elixir-ls/releases/download/v0.7.0/elixir-ls-1.11.zip
-" unzip elixir-ls-1.11.zip -d ~/.elixir-ls
-" chmod +x ~/.elixir-ls/language_server.sh
-"
 " New: using 'kabouzeid/nvim-lspinstall'
 " :LspInstall elixir | efm | xxx
 "
@@ -207,6 +203,7 @@ END
 " https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
 "
 " EFM: install with nvim-lspinstall
+" vim ~/.config/efm-langserver/config.yaml
 "
 " Debug LS:
 " 1. :lua print(vim.lsp.get_log_path())
@@ -231,10 +228,15 @@ lua << END
     local servers = lspinstall.installed_servers()
     local lspconfig = require'lspconfig'
 
+    -- Neovim doesn't support snippets out of the box, so we need to mutate the
+    -- capabilities we send to the language server to let them know we want snippets.
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities.textDocument.completion.completionItem.snippetSupport = true
+
     for _, server in pairs(servers) do
       lspconfig[server].setup({
         capabilities = capabilities,
-        on_attach = on_attach
+        on_attach = on_attach,
       })
     end
   end
