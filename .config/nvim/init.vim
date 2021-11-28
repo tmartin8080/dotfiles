@@ -222,16 +222,16 @@ nnoremap <silent>rn <cmd>lua vim.lsp.buf.rename()<CR>
 lua << END
   local function setup_servers()
 
+    -- Neovim doesn't support snippets out of the box, so we need to mutate the
+    -- capabilities we send to the language server to let them know we want snippets.
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities.textDocument.completion.completionItem.snippetSupport = true
+
     local lspinstall = require'lspinstall'
     lspinstall.setup()
 
     local servers = lspinstall.installed_servers()
     local lspconfig = require'lspconfig'
-
-    -- Neovim doesn't support snippets out of the box, so we need to mutate the
-    -- capabilities we send to the language server to let them know we want snippets.
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities.textDocument.completion.completionItem.snippetSupport = true
 
     for _, server in pairs(servers) do
       lspconfig[server].setup({
