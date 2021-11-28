@@ -44,6 +44,7 @@ brew install gmp
 brew install rg
 brew install fd
 brew install ldns
+brew install universal-ctags
 
 ## Languages
 brew install gpg
