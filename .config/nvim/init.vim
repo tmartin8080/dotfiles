@@ -1,7 +1,14 @@
- " =============================================================================
+" =============================================================================
+" Wishlist
+" =============================================================================
+" - auto complete #{} interpolation in elixir.
+" - Markdown completion - https://github.com/ellisonleao/glow.nvim
+
+" =============================================================================
 " Interface
 " =============================================================================
 set autoread
+
 " nnoremap c :bp\|bd #<CR>
 au CursorHold * checktime
 autocmd InsertEnter,InsertLeave * set cul!
@@ -42,10 +49,15 @@ set undodir=.undo/,~/.undo/,/tmp//
 " =============================================================================
 call plug#begin('~/.config/nvim/autoload/plugged')
 
+  " Theme
+  Plug 'sainnhe/edge'
+  " Plug 'joshdick/onedark.vim'
+  " Plug 'EdenEast/nightfox.nvim'
+
+  " Misc
   Plug 'tpope/vim-abolish'
   Plug 'tpope/vim-sensible'
   Plug 'tpope/vim-ragtag'
-  Plug 'sainnhe/edge'
   Plug 'scrooloose/nerdtree'
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'itchyny/lightline.vim'
@@ -60,10 +72,19 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'terryma/vim-multiple-cursors'
   Plug 'mattn/emmet-vim'
   Plug 'gregsexton/MatchTag', { 'for': 'html' }
+
   " LSP
   Plug 'neovim/nvim-lspconfig'
-  Plug 'nvim-lua/completion-nvim'
-  Plug 'kabouzeid/nvim-lspinstall'
+  Plug 'williamboman/nvim-lsp-installer'
+
+  " Completion and snips
+  Plug 'hrsh7th/cmp-nvim-lsp'
+  Plug 'hrsh7th/cmp-buffer'
+  Plug 'hrsh7th/cmp-path'
+  Plug 'hrsh7th/cmp-cmdline'
+  Plug 'hrsh7th/nvim-cmp'
+  Plug 'hrsh7th/cmp-vsnip'
+  Plug 'hrsh7th/vim-vsnip'
 
   " Elixir
   Plug 'elixir-editors/vim-elixir'
@@ -71,21 +92,19 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'slime-lang/vim-slime-syntax'
 
   " Other
-  Plug 'SirVer/ultisnips'
-  Plug 'honza/vim-snippets'
   Plug '/usr/local/opt/fzf'
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
-  Plug 'vim-ruby/vim-ruby'
-  Plug 'hashivim/vim-terraform'
-  Plug 'skanehira/docker-compose.vim'
   Plug 'voldikss/vim-floaterm'
   Plug 'Joorem/vim-haproxy'
   Plug 'ntpeters/vim-better-whitespace'
-  " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+
+  " Treesitter - syntax and highlighting
   " :TSInstall query
   " :TSPlaygroundToggle
-  " Plug 'nvim-treesitter/playground'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+  Plug 'nvim-treesitter/playground'
+
   " single/multi line code handler: gS - split one line into multiple, gJ - combine multiple lines into one
   Plug 'AndrewRadev/splitjoin.vim'
   Plug 'tpope/vim-markdown', { 'for': 'markdown' }
@@ -108,6 +127,51 @@ set background=dark
 set t_Co=256
 set laststatus=2
 set noshowmode
+
+" =============================================================================
+" nvim-treesitter
+"
+" Syntax parsing and highlighting
+" https://github.com/nvim-treesitter/nvim-treesitter
+"
+" Issues:
+" https://github.com/nvim-treesitter/nvim-treesitter/issues/1957
+"
+" =============================================================================
+lua <<EOF
+  require'nvim-treesitter.configs'.setup {
+    ensure_installed = {"yaml", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5"},
+    sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
+    ignore_install = { "elixir", "heex" }, -- List of parsers to ignore installing
+    highlight = {
+      enable = true,              -- false will disable the whole extension
+      -- disable = { "c", "rust" },  -- list of language that will be disabled
+      -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+      -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+      -- Using this option may slow down your editor, and you may see some duplicate highlights.
+      -- Instead of true it can also be a list of languages
+      additional_vim_regex_highlighting = false,
+    },
+    playground = {
+      enable = true,
+      disable = {},
+      updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+      persist_queries = false, -- Whether the query persists across vim sessions
+      keybindings = {
+        toggle_query_editor = 'o',
+        toggle_hl_groups = 'i',
+        toggle_injected_languages = 't',
+        toggle_anonymous_nodes = 'a',
+        toggle_language_display = 'I',
+        focus_language = 'f',
+        unfocus_language = 'F',
+        update = 'R',
+        goto_node = '<cr>',
+        show_help = '?',
+      },
+    }
+  }
+EOF
 
 " =============================================================================
 " scrooloose/nerdtree
@@ -158,12 +222,6 @@ let g:lightline = {
   \ }
 
 " =============================================================================
-" vim-gitbranch
-"
-" https://github.com/itchyny/vim-gitbranch
-" =============================================================================
-
-" =============================================================================
 " lightline-gitdiff
 "
 " https://github.com/macthecadillac/lightline-gitdiff
@@ -190,25 +248,11 @@ lua << END
 END
 
 " =============================================================================
-" nvim-lsp
 "
-" New: using 'kabouzeid/nvim-lspinstall'
+" New: using williamboman/nvim-lsp-installer
 " :LspInstall elixir | efm | xxx
 "
 " :checkhealth
-"
-" https://github.com/neovim/nvim-lspconfig/blob/a21a509417aa530fb7b54020f590fa5ccc67de77/CONFIG.md#elixirls
-"
-" Keybinging & Completion:
-" https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
-"
-" EFM: install with nvim-lspinstall
-" vim ~/.config/efm-langserver/config.yaml
-"
-" Debug LS:
-" 1. :lua print(vim.lsp.get_log_path())
-" 2. tail -f ~/.cache/nvim/lsp.log
-" 3. Open language file project and see what happens
 " =============================================================================
 nnoremap <silent><space>D <cmd>lua vim.lsp.buf.type_definition()<CR>
 nnoremap <silent><space>f <cmd>lua vim.lsp.buf.formatting()<CR>
@@ -218,52 +262,82 @@ nnoremap <silent>K  <cmd>lua vim.lsp.buf.hover()<CR>
 " method textDocument/rename is not supported by any of the servers registered for the current buffer
 nnoremap <silent>rn <cmd>lua vim.lsp.buf.rename()<CR>
 
-" must be absolute path to language server script
-lua << END
-  local function setup_servers()
+" Completion Configuration
+set completeopt=menu,menuone,noselect
 
-    -- Neovim doesn't support snippets out of the box, so we need to mutate the
-    -- capabilities we send to the language server to let them know we want snippets.
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities.textDocument.completion.completionItem.snippetSupport = true
+lua << EOF
+  local lsp_installer = require("nvim-lsp-installer")
 
-    local lspinstall = require'lspinstall'
-    lspinstall.setup()
+  -- Setup nvim-cmp.
+  local cmp = require'cmp'
 
-    local servers = lspinstall.installed_servers()
-    local lspconfig = require'lspconfig'
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+        -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
+      end,
+    },
+    mapping = {
+      ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+      ['<C-y>'] = cmp.config.disable, -- Specify `cm.config.disable` if you want to remove the default `<C-y>` mapping.
+      ['<C-e>'] = cmp.mapping({
+        i = cmp.mapping.abort(),
+        c = cmp.mapping.close(),
+      }),
+      -- Accept currently selected item. If none selected, `select` first item.
+      -- Set `select` to `false` to only confirm explicitly selected items.
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    },
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' }, -- For vsnip users.
+    }, {
+      { name = 'buffer' },
+    })
+  })
 
-    for _, server in pairs(servers) do
-      lspconfig[server].setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-    end
-  end
+  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline('/', {
+    sources = {
+      { name = 'buffer' }
+    }
+  })
 
-  setup_servers()
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
 
-  -- Automatically reload after `:LspInstall <server>` so we don't have to restart neovim
-  require'lspinstall'.post_install_hook = function ()
-    setup_servers() -- reload installed servers
-    vim.cmd("bufdo e") -- this triggers the FileType autocmd that starts the server
-  end
+  -- Setup lspconfig.
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-END
+  -- Register a handler that will be called for all installed servers.
+  -- Alternatively, you may also register handlers on specific server instances instead (see example below).
+  lsp_installer.on_server_ready(function(server)
+      local opts = {
+        capabilities = capabilities
+      }
 
-" Completion
-let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+      -- (optional) Customize the options passed to the server
+      -- if server.name == "tsserver" then
+      --     opts.root_dir = function() ... end
+      -- end
 
-" =============================================================================
-" ultisnips
-"
-" =============================================================================
-let g:completion_enable_snippet = 'UltiSnips'
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+      -- This setup() function is exactly the same as lspconfig's setup function.
+      -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+      server:setup(opts)
+  end)
+EOF
 
 " =============================================================================
 " fzf
@@ -280,35 +354,6 @@ augroup fzf
   autocmd  FileType fzf set laststatus=0 noshowmode noruler
     \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 augroup END
-
-
-" =============================================================================
-" nvim-lua/completion-nvim
-" https://github.com/nvim-lua/completion-nvim
-" :h ins-completion
-" =============================================================================
-let g:completion_enable_snippet = 'UltiSnips'
-
-" Use <Tab> and <S-Tab> to navigate through popup menu
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" Set completeopt to have a better completion experience
-set completeopt=menuone,noinsert,noselect
-
-" Avoid showing message extra message when using completion
-set shortmess+=c
-
-function! CleverTab()
-   if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
-      return "\<Tab>"
-   else
-      return "\<C-N>"
-   endif
-endfunction
-inoremap <Tab> <C-R>=CleverTab()<CR>
-
-autocmd BufEnter * lua require'completion'.on_attach()
 
 " =============================================================================
 " https://github.com/skanehira/docker-compose.vim

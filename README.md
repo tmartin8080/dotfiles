@@ -40,3 +40,6 @@ From within nvim:
 brew install wrk
 wrk -t4 -c100 -d30S --timeout 2000 "http://127.0.0.1:4000"
 ```
+
+## Syntax highlighting
+- using nvim-treesitter, (except for elixir, there's an issue)
