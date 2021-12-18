@@ -51,7 +51,8 @@ call plug#begin('~/.config/nvim/autoload/plugged')
 
   " Theme
   Plug 'sainnhe/edge'
-  " Plug 'joshdick/onedark.vim'
+  Plug 'Mofiqul/vscode.nvim'
+  Plug 'joshdick/onedark.vim'
   " Plug 'EdenEast/nightfox.nvim'
 
   " Misc
@@ -87,7 +88,6 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'hrsh7th/vim-vsnip'
 
   " Elixir
-  Plug 'elixir-editors/vim-elixir'
   Plug 'mhinz/vim-mix-format'
   Plug 'slime-lang/vim-slime-syntax'
 
@@ -120,9 +120,9 @@ call plug#end()
 " Copy edge theme to lightline:
 " cp ~/.config/nvim/autoload/plugged/edge/autoload/lightline/colorscheme/edge.vim ~/.config/nvim/autoload/plugged/lightline.vim/autoload/lightline/colorscheme
 " =============================================================================
-colorscheme edge
-let g:edge_style = 'aura'
-let g:edge_disable_italic_comment = 1
+let g:onedark_style = 'warm'
+let g:onedark_transparent_background = v:true
+colorscheme onedark
 set background=dark
 set t_Co=256
 set laststatus=2
@@ -140,9 +140,9 @@ set noshowmode
 " =============================================================================
 lua <<EOF
   require'nvim-treesitter.configs'.setup {
-    ensure_installed = {"yaml", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5"},
+    ensure_installed = {"elixir", "yaml", "heex", "markdown", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5"},
     sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
-    ignore_install = { "elixir", "heex" }, -- List of parsers to ignore installing
+    -- ignore_install = { "elixir"}, -- List of parsers to ignore installing
     highlight = {
       enable = true,              -- false will disable the whole extension
       -- disable = { "c", "rust" },  -- list of language that will be disabled
@@ -204,7 +204,7 @@ endif
 " =============================================================================
 let g:lightline = {}
 let g:lightline = {
-  \   'colorscheme': 'edge',
+  \   'colorscheme': 'onedark',
   \   'active': {
   \     'left': [['mode', 'paste'],
   \              ['gitbranch', 'gitstatus', 'filename']],
