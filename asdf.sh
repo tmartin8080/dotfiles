@@ -9,6 +9,7 @@ GOLANG_VERSION=1.16.5
 TERRAFORM_VERSION=1.0.1
 KUBECTL_VERSION=1.21.2
 HELM_VERSION=3.6.1
+PG_VERSION=13.5
 
 asdf plugin add python
 asdf install python $PYTHON3_VERSION
@@ -55,3 +56,10 @@ asdf plugin add helm https://github.com/Antiarchitect/asdf-helm.git
 asdf install helm $HELM_VERSION
 asdf global helm $HELM_VERSION
 asdf reshim helm
+
+asdf plugin add postgres
+asdf install postgres $PG_VERSION
+asdf global postgres $PG_VERSION
+asdf local postgres $PG_VERSION
+asdf reshim postgres
+
