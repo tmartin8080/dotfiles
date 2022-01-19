@@ -1,12 +1,20 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
 # Elixir IEX
-export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl)"
+export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl@1.1)"
 export ERL_AFLAGS="-kernel shell_history enabled"
+
+# Ruby
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+
+# PG for asdf
+# https://github.com/smashedtoatoms/asdf-postgres/issues/28
+export POSTGRES_EXTRA_CONFIGURE_OPTIONS="--with-openssl --with-libs=/usr/local/opt/openssl@1.1/lib --with-includes=/usr/local/opt/openssl@1.1/include"
 
 export HOMEBREW_EDITOR=nvim
 export EDITOR=nvim
@@ -48,9 +56,10 @@ alias ohmyzsh="nvim ~/.oh-my-zsh"
 alias lsplog="tail -f ~/.cache/nvim/lsp.log"
 alias vimconfig="vim ~/.config/nvim/init.vim"
 alias efmconfig="vim ~/.config/efm-langserver/config.yaml"
+alias ngconfig="vim ~/.ngrok2/ngrok.yml"
 alias update-nvim-nightly='asdf uninstall neovim nightly && asdf install neovim nightly'
-export PATH="/usr/local/opt/postgresql@9.6/bin:$PATH"
-export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
+# alias docker-compose='docker compose'
+export PATH=$PATH:/Users/troy/work/getthru/team-tools/bin
 
 function nukedocker() {
 	docker stop `docker ps -qa` 2>/dev/null ; true
@@ -59,4 +68,3 @@ function nukedocker() {
 	docker system prune -af
 	docker volume prune -f
 }
-
