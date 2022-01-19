@@ -14,16 +14,12 @@ export EDITOR=nvim
 ZSH_THEME="robbyrussell"
 
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
-plugins=(git)
+plugins=(git asdf)
 
 source $ZSH/oh-my-zsh.sh
 
 # brew install z
 . /usr/local/etc/profile.d/z.sh
-
-# ASDF
-. /usr/local/opt/asdf/asdf.sh
-. /usr/local/opt/asdf/etc/bash_completion.d/asdf.bash
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -55,3 +51,12 @@ alias efmconfig="vim ~/.config/efm-langserver/config.yaml"
 alias update-nvim-nightly='asdf uninstall neovim nightly && asdf install neovim nightly'
 export PATH="/usr/local/opt/postgresql@9.6/bin:$PATH"
 export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
+
+function nukedocker() {
+	docker stop `docker ps -qa` 2>/dev/null ; true
+	docker rm `docker ps -qa` 2>/dev/null ; true
+	docker rmi `docker image ls -qa` 2>/dev/null ; true
+	docker system prune -af
+	docker volume prune -f
+}
+
