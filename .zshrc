@@ -6,11 +6,10 @@ export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
 export ZSH="$HOME/.oh-my-zsh"
 
 # Elixir IEX
-export KERL_CONFIGURE_OPTIONS="--without-javac --with-ssl=$(brew --prefix openssl@1.1)"
+export KERL_CONFIGURE_OPTIONS="--without-javac \
+                               --with-wx-config=`brew --prefix wxwidgets`/bin/wx-config \
+                               --with-ssl=`brew --prefix openssl@1.1`"
 export ERL_AFLAGS="-kernel shell_history enabled"
-
-# Ruby
-export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
 # PG for asdf
 # https://github.com/smashedtoatoms/asdf-postgres/issues/28
@@ -24,7 +23,7 @@ ZSH_THEME="robbyrussell"
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
 plugins=(git asdf)
 
-source $ZSH/oh-my-zsh.sh
+. $ZSH/oh-my-zsh.sh
 
 # brew install z
 . /usr/local/etc/profile.d/z.sh
@@ -47,19 +46,15 @@ alias gpo="git push origin"
 alias gph="git push heroku"
 # https://blog.carbonfive.com/2017/08/28/always-squash-and-rebase-your-git-commits/
 alias gl="git log --graph --decorate --pretty=oneline --abbrev-commit"
-alias gbr="git branch | grep -v "master" | xargs git branch -D"
-alias phx="iex -S mix phx.server"
-alias xx="iex -S mix"
+alias gbr="git branch | grep -v "main" | xargs git branch -D"
 alias phx.install="mix archive.install hex phx_new"
 alias zshconfig="nvim ~/.zshrc"
 alias ohmyzsh="nvim ~/.oh-my-zsh"
 alias lsplog="tail -f ~/.cache/nvim/lsp.log"
 alias vimconfig="vim ~/.config/nvim/init.vim"
 alias efmconfig="vim ~/.config/efm-langserver/config.yaml"
-alias ngconfig="vim ~/.ngrok2/ngrok.yml"
+alias ngrokconfig="vim ~/.ngrok2/ngrok.yml"
 alias update-nvim-nightly='asdf uninstall neovim nightly && asdf install neovim nightly'
-# alias docker-compose='docker compose'
-export PATH=$PATH:/Users/troy/work/getthru/team-tools/bin
 
 function nukedocker() {
 	docker stop `docker ps -qa` 2>/dev/null ; true

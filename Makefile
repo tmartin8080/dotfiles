@@ -1,12 +1,10 @@
-.PHONY: install
-install: brew git asdf copy-files
+setup: init git asdf copy-files
 
-.PHONY: brew
-brew:
-	./brew.sh
-asdf:
-	./asdf.sh
+init:
+	./0.init.sh
 git:
-	./git.sh
+	./1.git.sh
+asdf:
+	./2.asdf.sh
 copy-files:
-	./copy-files.sh
+	./3.copy-files.sh

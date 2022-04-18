@@ -2,20 +2,22 @@
 
 cd "$(dirname "${BASH_SOURCE}")";
 
-git pull origin master;
+git pull origin main;
 
 function doIt() {
 	rsync --exclude ".git/" \
 		--exclude ".gitignore" \
 		--exclude ".DS_Store" \
 		--exclude ".osx" \
-		--exclude "brew.sh" \
-		--exclude "asdf.sh" \
-		--exclude "git.sh" \
-		--exclude "copy-files.sh" \
 		--exclude ".tool-versions" \
+		--exclude "0.init.sh" \
+		--exclude "1.git.sh" \
+		--exclude "2.asdf.sh" \
+		--exclude "3.copy-files.sh" \
 		--exclude "README.md" \
-		--exclude "LICENSE-MIT.txt" \
+		--exclude "Makefile" \
+		--exclude "Brewfile" \
+		--exclude "iterm2" \
 		-avh --no-perms . ~;
 }
 
@@ -30,4 +32,4 @@ else
 fi;
 unset doIt;
 
-source ~/.zshrc;
+exec zsh

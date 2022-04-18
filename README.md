@@ -1,11 +1,16 @@
 # Dotfiles
 
+NOTE: use `brew install wxwidgets@3.0` for now.
+- https://github.com/asdf-vm/asdf-erlang/issues/248
+- https://github.com/erlang/otp/issues/5893
+
 
 ```
-$ make install
+$ make setup
 
 OR
 
+$ make init
 $ make brew
 $ make asdf
 $ make copy-files
@@ -43,3 +48,11 @@ wrk -t4 -c100 -d30S --timeout 2000 "http://127.0.0.1:4000"
 
 ## Syntax highlighting
 - using nvim-treesitter, (except for elixir, there's an issue)
+
+## PG
+
+```
+Success. You can now start the database server using:
+
+    /Users/troy/.asdf/installs/postgres/13.5/bin/pg_ctl -D /Users/troy/.asdf/installs/postgres/13.5/data -l logfile start
+```
