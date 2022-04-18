@@ -74,18 +74,22 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'mattn/emmet-vim'
   Plug 'gregsexton/MatchTag', { 'for': 'html' }
 
-  " LSP
+  " LSP Support
   Plug 'neovim/nvim-lspconfig'
   Plug 'williamboman/nvim-lsp-installer'
+  Plug 'VonHeikemen/lsp-zero.nvim'
 
-  " Completion and snips
-  Plug 'hrsh7th/cmp-nvim-lsp'
+  " Autocompletion
+  Plug 'hrsh7th/nvim-cmp'
   Plug 'hrsh7th/cmp-buffer'
   Plug 'hrsh7th/cmp-path'
-  Plug 'hrsh7th/cmp-cmdline'
-  Plug 'hrsh7th/nvim-cmp'
-  Plug 'hrsh7th/cmp-vsnip'
-  Plug 'hrsh7th/vim-vsnip'
+  Plug 'saadparwaiz1/cmp_luasnip'
+  Plug 'hrsh7th/cmp-nvim-lsp'
+  Plug 'hrsh7th/cmp-nvim-lua'
+
+  "  Snippets
+  Plug 'L3MON4D3/LuaSnip'
+  Plug 'rafamadriz/friendly-snippets'
 
   " Elixir
   Plug 'mhinz/vim-mix-format'
@@ -98,6 +102,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'voldikss/vim-floaterm'
   Plug 'Joorem/vim-haproxy'
   Plug 'ntpeters/vim-better-whitespace'
+  Plug 'isobit/vim-caddyfile'
 
   " Treesitter - syntax and highlighting
   " :TSInstall query
@@ -150,7 +155,7 @@ lua <<EOF
       -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
       -- Using this option may slow down your editor, and you may see some duplicate highlights.
       -- Instead of true it can also be a list of languages
-      additional_vim_regex_highlighting = false,
+      additional_vim_regex_highlighting = true,
     },
     playground = {
       enable = true,
@@ -263,80 +268,13 @@ nnoremap <silent>K  <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent>rn <cmd>lua vim.lsp.buf.rename()<CR>
 
 " Completion Configuration
-set completeopt=menu,menuone,noselect
+" set completeopt=menu,menuone,noselect
 
 lua << EOF
-  local lsp_installer = require("nvim-lsp-installer")
+  local lsp = require('lsp-zero')
 
-  -- Setup nvim-cmp.
-  local cmp = require'cmp'
-
-  cmp.setup({
-    snippet = {
-      -- REQUIRED - you must specify a snippet engine
-      expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-        -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
-      end,
-    },
-    mapping = {
-      ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-      ['<C-y>'] = cmp.config.disable, -- Specify `cm.config.disable` if you want to remove the default `<C-y>` mapping.
-      ['<C-e>'] = cmp.mapping({
-        i = cmp.mapping.abort(),
-        c = cmp.mapping.close(),
-      }),
-      -- Accept currently selected item. If none selected, `select` first item.
-      -- Set `select` to `false` to only confirm explicitly selected items.
-      ['<CR>'] = cmp.mapping.confirm({ select = true }),
-    },
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp' },
-      { name = 'vsnip' }, -- For vsnip users.
-    }, {
-      { name = 'buffer' },
-    })
-  })
-
-  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline('/', {
-    sources = {
-      { name = 'buffer' }
-    }
-  })
-
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline(':', {
-    sources = cmp.config.sources({
-      { name = 'path' }
-    }, {
-      { name = 'cmdline' }
-    })
-  })
-
-  -- Setup lspconfig.
-  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-
-  -- Register a handler that will be called for all installed servers.
-  -- Alternatively, you may also register handlers on specific server instances instead (see example below).
-  lsp_installer.on_server_ready(function(server)
-      local opts = {
-        capabilities = capabilities
-      }
-
-      -- (optional) Customize the options passed to the server
-      -- if server.name == "tsserver" then
-      --     opts.root_dir = function() ... end
-      -- end
-
-      -- This setup() function is exactly the same as lspconfig's setup function.
-      -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-      server:setup(opts)
-  end)
+  lsp.preset('recommended')
+  lsp.setup()
 EOF
 
 " =============================================================================
