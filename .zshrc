@@ -7,7 +7,7 @@ export ZSH="$HOME/.oh-my-zsh"
 
 # Elixir IEX
 export KERL_CONFIGURE_OPTIONS="--without-javac \
-                               --with-wx-config=`brew --prefix wxwidgets`/bin/wx-config \
+                               --with-wx-config=`brew --prefix wxwidgets@3.0`/bin/wx-config \
                                --with-ssl=`brew --prefix openssl@1.1`"
 export ERL_AFLAGS="-kernel shell_history enabled"
 
