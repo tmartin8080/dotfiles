@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 GIT_USER=tmartin8080
 GIT_EMAIL=troy@devato.com
 

@@ -5,10 +5,20 @@ export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-# Elixir IEX
-export KERL_CONFIGURE_OPTIONS="--without-javac \
-                               --with-wx-config=`brew --prefix wxwidgets@3.0`/bin/wx-config \
-                               --with-ssl=`brew --prefix openssl@1.1`"
+# Elixir
+export KERL_CONFIGURE_OPTIONS="--disable-debug \
+    --disable-silent-rules \
+    --enable-dynamic-ssl-lib \
+    --enable-hipe \
+    --enable-shared-zlib \
+    --enable-smp-support \
+    --enable-threads \
+    --enable-wx \
+    --with-ssl=$(brew --prefix openssl@1.1) \
+    --without-javac
+    --enable-darwin-64bit \
+    --enable-kernel-poll \
+    --with-dynamic-trace=dtrace"
 export ERL_AFLAGS="-kernel shell_history enabled"
 
 # PG for asdf

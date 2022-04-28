@@ -1,10 +1,5 @@
 # Dotfiles
 
-NOTE: use `brew install wxwidgets@3.0` for now.
-- https://github.com/asdf-vm/asdf-erlang/issues/248
-- https://github.com/erlang/otp/issues/5893
-
-
 ```
 $ make setup
 
@@ -22,7 +17,6 @@ $ make copy-files
 - [Alfred](https://www.alfredapp.com/)
 - [Magnet](https://apps.apple.com/ca/app/magnet/id441258766?mt=12)
 - [DevSwatch](https://apps.apple.com/ca/app/devswatch/id1477857867?mt=12)
-- [Magnet](https://apps.apple.com/ca/app/magnet/id441258766?mt=12)
 
 ## Iterm2
 
@@ -47,12 +41,21 @@ wrk -t4 -c100 -d30S --timeout 2000 "http://127.0.0.1:4000"
 ```
 
 ## Syntax highlighting
-- using nvim-treesitter, (except for elixir, there's an issue)
+- using nvim-treesitter 
 
-## PG
+# wxwidgets brew issue
 
+- https://github.com/asdf-vm/asdf-erlang/issues/248
+- https://github.com/erlang/otp/issues/5893
+- https://remarkablemark.org/blog/2017/02/03/install-brew-package-version/
+- https://github.com/erlang/otp/commit/c2eb69239622046093c25e986dd606ea339c59a9
+- https://stackoverflow.com/a/67656458
+- https://stackoverflow.com/questions/13477363/how-can-i-brew-link-a-specific-version
 ```
-Success. You can now start the database server using:
-
-    /Users/troy/.asdf/installs/postgres/13.5/bin/pg_ctl -D /Users/troy/.asdf/installs/postgres/13.5/data -l logfile start
+brew tap laggardkernel/tap
+wget https://raw.githubusercontent.com/Homebrew/homebrew-core/7d7daebdadd1b7badf56bd87bce75f38e51c5795/Formula/wxwidgets.rb
+brew install ./wxwidgets.rb
+brew switch wxwidgets 3.1.5
+brew pin wxwidgets
 ```
+
