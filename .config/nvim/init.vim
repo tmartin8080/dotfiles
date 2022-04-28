@@ -242,6 +242,7 @@ let g:lightline_gitdiff#min_winwidth = '70'
 " https://github.com/tpope/vim-commentary
 " =============================================================================
 autocmd FileType apache setlocal commentstring=#\ %s
+autocmd FileType elixir setlocal commentstring=#\ %s
 
 " =============================================================================
 " autopairs
@@ -268,7 +269,7 @@ nnoremap <silent>K  <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent>rn <cmd>lua vim.lsp.buf.rename()<CR>
 
 " Completion Configuration
-" set completeopt=menu,menuone,noselect
+set completeopt=menu,menuone,noselect
 
 lua << EOF
   local lsp = require('lsp-zero')
