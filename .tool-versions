@@ -3,6 +3,7 @@ erlang 24.0.5
 elixir ref:v1.13.4
 nodejs 14.15.4
 neovim nightly
+postgres 13.6
 golang 1.16.5
 helm 3.6.1
 kubectl 1.21.2
