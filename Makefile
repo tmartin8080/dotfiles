@@ -1,3 +1,4 @@
+.PHONY: setup init git asdf copy-files
 setup: init git asdf copy-files
 
 init:

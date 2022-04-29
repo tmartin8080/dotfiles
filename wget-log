@@ -1,0 +1,11 @@
+--2022-04-29 09:52:13--  https://raw.githubusercontent.com/Homebrew/homebrew-core/7d7daebdadd1b7badf56bd87bce75f38e51c5795/Formula/wxwidgets.rb
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.109.133, 185.199.110.133, 185.199.111.133, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.109.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 2094 (2.0K) [text/plain]
+Saving to: ‘wxwidgets.rb.4’
+
+     0K ..                                                    100% 13.1M=0s
+
+2022-04-29 09:52:14 (13.1 MB/s) - ‘wxwidgets.rb.4’ saved [2094/2094]
+
