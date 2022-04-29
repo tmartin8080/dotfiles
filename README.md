@@ -51,7 +51,11 @@ wrk -t4 -c100 -d30S --timeout 2000 "http://127.0.0.1:4000"
 - https://github.com/erlang/otp/commit/c2eb69239622046093c25e986dd606ea339c59a9
 - https://stackoverflow.com/a/67656458
 - https://stackoverflow.com/questions/13477363/how-can-i-brew-link-a-specific-version
+
+# workaround for wxwidgets issue
 ```
+brew install wxwidgets
+brew unlink wxwidgets
 brew tap laggardkernel/tap
 wget https://raw.githubusercontent.com/Homebrew/homebrew-core/7d7daebdadd1b7badf56bd87bce75f38e51c5795/Formula/wxwidgets.rb
 brew install ./wxwidgets.rb
