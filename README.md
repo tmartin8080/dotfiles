@@ -63,3 +63,5 @@ brew switch wxwidgets 3.1.5
 brew pin wxwidgets
 ```
 
+## Current Versions
+- nvim - `v0.8.0-dev+547-ge837f29ce`
