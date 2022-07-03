@@ -8,7 +8,7 @@ tools:
     lint-stdin: true
 
   mix_credo: &mix_credo
-    # lint-command: "MIX_ENV=test mix credo suggest --format=flycheck --read-from-stdin ${INPUT}"
+    # # lint-command: "MIX_ENV=test mix credo suggest --format=flycheck --read-from-stdin ${INPUT}"
     lint-command: "MIX_ENV=test mix credo --strict --format=flycheck --read-from-stdin ${INPUT}"
     lint-stdin: true
     lint-ignore-exit-code: true
