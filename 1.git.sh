@@ -14,3 +14,6 @@ git config --global core.excludesfile ~/.gitignore_global
 # Configure git user
 git config --global user.name "$GIT_USER"
 git config --global user.email "$GIT_EMAIL"
+
+# Custom configs
+git config --global --add --bool push.autoSetupRemote true
