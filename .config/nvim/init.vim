@@ -78,6 +78,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'neovim/nvim-lspconfig'
   Plug 'williamboman/nvim-lsp-installer'
   Plug 'VonHeikemen/lsp-zero.nvim'
+  Plug 'folke/trouble.nvim'
 
   " Autocompletion
   Plug 'hrsh7th/nvim-cmp'
@@ -276,6 +277,30 @@ lua << EOF
 
   lsp.preset('recommended')
   lsp.setup()
+EOF
+
+" =============================================================================
+" https://github.com/neovim/nvim-lspconfig/issues/662
+" Enable virtual text
+" =============================================================================
+lua << EOF
+  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+      virtual_text = true
+    }
+  )
+EOF
+
+" =============================================================================
+" https://github.com/folke/trouble.nvim
+" :Trouble
+" =============================================================================
+lua << EOF
+  require("trouble").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
 EOF
 
 " =============================================================================
