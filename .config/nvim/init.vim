@@ -140,13 +140,15 @@ set noshowmode
 " Syntax parsing and highlighting
 " https://github.com/nvim-treesitter/nvim-treesitter
 "
+" Terraform - LspInstall tslint / TSInstall hcl
+"
 " Issues:
 " https://github.com/nvim-treesitter/nvim-treesitter/issues/1957
 "
 " =============================================================================
 lua <<EOF
   require'nvim-treesitter.configs'.setup {
-    ensure_installed = {"elixir", "yaml", "heex", "markdown", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5"},
+    ensure_installed = {"elixir", "yaml", "heex", "markdown", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5", "hcl"},
     sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
     -- ignore_install = { "elixir"}, -- List of parsers to ignore installing
     highlight = {
