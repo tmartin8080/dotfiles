@@ -34,6 +34,7 @@ inoremap jk <esc>
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
 autocmd BufWritePost *.exs,*.ex silent :!mix format %
+autocmd BufWritePost *.tf,*.tfvar silent :!terraform fmt %
 
 " =============================================================================
 " Swp and temp files
@@ -246,6 +247,7 @@ let g:lightline_gitdiff#min_winwidth = '70'
 " =============================================================================
 autocmd FileType apache setlocal commentstring=#\ %s
 autocmd FileType elixir setlocal commentstring=#\ %s
+autocmd FileType terraform setlocal commentstring=#\ %s
 
 " =============================================================================
 " autopairs
