@@ -77,7 +77,8 @@ call plug#begin('~/.config/nvim/autoload/plugged')
 
   " LSP Support
   Plug 'neovim/nvim-lspconfig'
-  Plug 'williamboman/nvim-lsp-installer'
+  Plug 'williamboman/mason.nvim'
+  Plug 'williamboman/mason-lspconfig.nvim'
   Plug 'VonHeikemen/lsp-zero.nvim'
   Plug 'folke/trouble.nvim'
 
@@ -149,7 +150,7 @@ set noshowmode
 " =============================================================================
 lua <<EOF
   require'nvim-treesitter.configs'.setup {
-    ensure_installed = {"elixir", "yaml", "heex", "markdown", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5", "hcl"},
+    ensure_installed = {"elixir", "yaml", "heex", "markdown", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5", "hcl", "rust"},
     sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
     -- ignore_install = { "elixir"}, -- List of parsers to ignore installing
     highlight = {
@@ -281,6 +282,15 @@ lua << EOF
 
   lsp.preset('recommended')
   lsp.setup()
+
+  vim.diagnostic.config({
+    virtual_text = true,
+    signs = true,
+    update_in_insert = false,
+    underline = true,
+    severity_sort = false,
+    float = true,
+  })
 EOF
 
 " =============================================================================
