@@ -65,6 +65,10 @@ alias vimconfig="vim ~/.config/nvim/init.vim"
 alias efmconfig="vim ~/.config/efm-langserver/config.yaml"
 alias ngrokconfig="vim ~/.ngrok2/ngrok.yml"
 alias update-nvim-nightly='asdf uninstall neovim nightly && asdf install neovim nightly'
+alias lzd='lazydocker'
+# Kubernetes
+alias k='kubectl'
+[[ $commands[kubectl] ]] && source <(kubectl completion zsh)
 
 function nukedocker() {
 	docker stop `docker ps -qa` 2>/dev/null ; true
@@ -73,3 +77,5 @@ function nukedocker() {
 	docker system prune -af
 	docker volume prune -f
 }
+
+. "$HOME/.cargo/env"
