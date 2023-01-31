@@ -70,12 +70,23 @@ alias lzd='lazydocker'
 alias k='kubectl'
 [[ $commands[kubectl] ]] && source <(kubectl completion zsh)
 
-function nukedocker() {
+# usage:
+# - exd '{Module, :function}'
+# - exd Module
+function exd() {
+  elixir -S mix run --no-start -e "IEx.Introspection.h $1"
+}
+
+function nukedocker-all() {
 	docker stop `docker ps -qa` 2>/dev/null ; true
 	docker rm `docker ps -qa` 2>/dev/null ; true
 	docker rmi `docker image ls -qa` 2>/dev/null ; true
 	docker system prune -af
 	docker volume prune -f
+}
+function nukedocker-volumes() {
+	docker stop `docker ps -qa` 2>/dev/null ; true
+	docker volume rm `docker volume ls -q`
 }
 
 . "$HOME/.cargo/env"
