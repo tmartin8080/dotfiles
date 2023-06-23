@@ -15,6 +15,9 @@ if ! test -f "${BREW_PREFIX}/bin/sha256sum"; then
   ln -s "${BREW_PREFIX}/bin/gsha256sum" "${BREW_PREFIX}/bin/sha256sum"
 fi
 
+# zsh default
+chsh -s /usr/local/bin/zsh
+
 # workaround for wxwidgets issue
 brew unlink wxwidgets
 brew tap laggardkernel/tap
@@ -28,7 +31,7 @@ brew autoremove
 
 if ! command -v asdf &>/dev/null; then
   echo "asdf does not exist"
-  git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.10.0  &>/dev/null
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.12.0  &>/dev/null
 fi
 
 . $HOME/.asdf/asdf.sh
