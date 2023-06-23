@@ -5,6 +5,7 @@ xcode-select --install &>/dev/null
 if ! command -v brew &>/dev/null; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
+
 brew update
 brew upgrade
 
@@ -15,8 +16,8 @@ if ! test -f "${BREW_PREFIX}/bin/sha256sum"; then
   ln -s "${BREW_PREFIX}/bin/gsha256sum" "${BREW_PREFIX}/bin/sha256sum"
 fi
 
-# zsh default
-chsh -s /usr/local/bin/zsh
+# install oh my zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # workaround for wxwidgets issue
 brew unlink wxwidgets
@@ -30,10 +31,10 @@ brew cleanup
 brew autoremove
 
 if ! command -v asdf &>/dev/null; then
-  echo "asdf does not exist"
+  echo "asdf does not exist... installing"
   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.12.0  &>/dev/null
 fi
 
-. $HOME/.asdf/asdf.sh
+source "$HOME/.asdf/asdf.sh"
 
 exit 0
