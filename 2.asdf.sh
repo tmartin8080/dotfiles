@@ -10,6 +10,7 @@ asdf plugin add golang || true
 asdf plugin add terraform https://github.com/asdf-community/asdf-hashicorp.git || true
 asdf plugin add kubectl https://github.com/asdf-community/asdf-kubectl.git || true
 asdf plugin add helm https://github.com/Antiarchitect/asdf-helm.git || true
+asdf plugin-add rust https://github.com/asdf-community/asdf-rust.git || true
 asdf plugin add postgres || true
 asdf plugin add nodejs || true
 
