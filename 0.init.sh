@@ -35,6 +35,7 @@ if ! command -v asdf &>/dev/null; then
   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.12.0  &>/dev/null
 fi
 
+. "$HOME/.asdf/asdf.sh"
 source "$HOME/.asdf/asdf.sh"
 
 exit 0

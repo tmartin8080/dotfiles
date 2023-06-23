@@ -5,4 +5,3 @@ nodejs 16.20.1
 neovim nightly
 helm 3.12.1
 terraform 1.5.1
-rust 1.70.0
