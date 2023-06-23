@@ -17,3 +17,4 @@ git config --global user.email "$GIT_EMAIL"
 
 # Custom configs
 git config --global --add --bool push.autoSetupRemote true
+git config --global init.defaultBranch main
