@@ -260,7 +260,7 @@ autocmd FileType terraform setlocal commentstring=#\ %s
 " https://github.com/windwp/nvim-autopairs
 " =============================================================================
 lua << END
-require('nvim-autopairs').setup()
+  require('nvim-autopairs').setup()
 END
 
 " =============================================================================
@@ -282,19 +282,43 @@ nnoremap <silent>rn <cmd>lua vim.lsp.buf.rename()<CR>
 set completeopt=menu,menuone,noselect
 
 lua << EOF
-local lsp = require('lsp-zero')
+  local lsp = require('lsp-zero')
 
-lsp.preset('recommended')
-lsp.setup()
+  lsp.preset('recommended')
+  lsp.setup()
 
-vim.diagnostic.config({
-virtual_text = true,
-signs = true,
-update_in_insert = false,
-underline = true,
-severity_sort = false,
-float = true,
-})
+  vim.diagnostic.config({
+    virtual_text = true,
+    signs = true,
+    update_in_insert = false,
+    underline = true,
+    severity_sort = false,
+    float = true,
+  })
+EOF
+
+" =============================================================================
+" https://github.com/hrsh7th/nvim-cmp
+" cmp setup
+" =============================================================================
+lua << EOF
+  local cmp = require("cmp")
+
+  cmp.setup({
+    mapping = {
+       ["<CR>"] = cmp.mapping({
+         i = function(fallback)
+           if cmp.visible() and cmp.get_active_entry() then
+             cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+           else
+             fallback()
+           end
+         end,
+         s = cmp.mapping.confirm({ select = true }),
+         c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
+       })
+    }
+  })
 EOF
 
 " =============================================================================
@@ -302,11 +326,11 @@ EOF
 " Enable virtual text
 " =============================================================================
 lua << EOF
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-vim.lsp.diagnostic.on_publish_diagnostics, {
-virtual_text = true
-}
-)
+  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+      virtual_text = true
+    }
+  )
 EOF
 
 " =============================================================================
