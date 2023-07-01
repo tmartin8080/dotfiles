@@ -30,11 +30,14 @@ endif
 
 " nnoremap <Leader>r :RunInInteractiveShell<Space>
 " nnoremap <silent> <F4> :set cursorline! <CR>
+" Vim things
 inoremap jk <esc>
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
+" NOTE: Format on Save
 autocmd BufWritePost *.exs,*.ex silent :!mix format %
 autocmd BufWritePost *.tf,*.tfvar silent :!terraform fmt %
+autocmd BufWritePost *.js,*.ts silent :!prettier %
 
 " =============================================================================
 " Swp and temp files
@@ -71,7 +74,8 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'tpope/vim-endwise'
   Plug 'tpope/vim-commentary'
   Plug 'machakann/vim-highlightedyank'
-  Plug 'terryma/vim-multiple-cursors'
+  " Plug 'terryma/vim-multiple-cursors'
+  Plug 'mg979/vim-visual-multi', {'branch': 'master'}
   Plug 'mattn/emmet-vim'
   Plug 'gregsexton/MatchTag', { 'for': 'html' }
 
@@ -149,37 +153,37 @@ set noshowmode
 "
 " =============================================================================
 lua <<EOF
-  require'nvim-treesitter.configs'.setup {
-    ensure_installed = {"elixir", "yaml", "heex", "markdown", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5", "hcl", "rust"},
-    sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
-    -- ignore_install = { "elixir"}, -- List of parsers to ignore installing
-    highlight = {
-      enable = true,              -- false will disable the whole extension
-      -- disable = { "c", "rust" },  -- list of language that will be disabled
-      -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-      -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-      -- Using this option may slow down your editor, and you may see some duplicate highlights.
-      -- Instead of true it can also be a list of languages
-      additional_vim_regex_highlighting = true,
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = {"elixir", "yaml", "heex", "markdown", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5", "hcl", "rust"},
+  sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
+  -- ignore_install = { "elixir"}, -- List of parsers to ignore installing
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+    -- disable = { "c", "rust" },  -- list of language that will be disabled
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = true,
+  },
+  playground = {
+    enable = true,
+    disable = {},
+    updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+    persist_queries = false, -- Whether the query persists across vim sessions
+    keybindings = {
+      toggle_query_editor = 'o',
+      toggle_hl_groups = 'i',
+      toggle_injected_languages = 't',
+      toggle_anonymous_nodes = 'a',
+      toggle_language_display = 'I',
+      focus_language = 'f',
+      unfocus_language = 'F',
+      update = 'R',
+      goto_node = '<cr>',
+      show_help = '?',
     },
-    playground = {
-      enable = true,
-      disable = {},
-      updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
-      persist_queries = false, -- Whether the query persists across vim sessions
-      keybindings = {
-        toggle_query_editor = 'o',
-        toggle_hl_groups = 'i',
-        toggle_injected_languages = 't',
-        toggle_anonymous_nodes = 'a',
-        toggle_language_display = 'I',
-        focus_language = 'f',
-        unfocus_language = 'F',
-        update = 'R',
-        goto_node = '<cr>',
-        show_help = '?',
-      },
-    }
+  }
   }
 EOF
 
@@ -214,22 +218,22 @@ endif
 " =============================================================================
 let g:lightline = {}
 let g:lightline = {
-  \   'colorscheme': 'onedark',
-  \   'active': {
-  \     'left': [['mode', 'paste'],
-  \              ['gitbranch', 'gitstatus', 'filename']],
-  \     'right': [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok', 'asyncrun_status' ]],
+      \   'colorscheme': 'onedark',
+      \   'active': {
+      \     'left': [['mode', 'paste'],
+      \              ['gitbranch', 'gitstatus', 'filename']],
+      \     'right': [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok', 'asyncrun_status' ]],
       \ 'component_function': {
       \   'gitbranch': 'gitbranch#name'
       \ },
-  \   },
-  \   'component': {
-  \     'gitstatus': '%<%{lightline_gitdiff#get_status()}',
-  \   },
-  \   'component_visible_condition': {
-  \     'gitstatus': 'lightline_gitdiff#get_status() !=# ""',
-  \   },
-  \ }
+      \   },
+      \   'component': {
+      \     'gitstatus': '%<%{lightline_gitdiff#get_status()}',
+      \   },
+      \   'component_visible_condition': {
+      \     'gitstatus': 'lightline_gitdiff#get_status() !=# ""',
+      \   },
+      \ }
 
 " =============================================================================
 " lightline-gitdiff
@@ -256,7 +260,7 @@ autocmd FileType terraform setlocal commentstring=#\ %s
 " https://github.com/windwp/nvim-autopairs
 " =============================================================================
 lua << END
-  require('nvim-autopairs').setup()
+require('nvim-autopairs').setup()
 END
 
 " =============================================================================
@@ -278,43 +282,19 @@ nnoremap <silent>rn <cmd>lua vim.lsp.buf.rename()<CR>
 set completeopt=menu,menuone,noselect
 
 lua << EOF
-  local lsp = require('lsp-zero')
+local lsp = require('lsp-zero')
 
-  lsp.preset('recommended')
-  lsp.setup()
+lsp.preset('recommended')
+lsp.setup()
 
-  vim.diagnostic.config({
-    virtual_text = true,
-    signs = true,
-    update_in_insert = false,
-    underline = true,
-    severity_sort = false,
-    float = true,
-  })
-EOF
-
-" =============================================================================
-" https://github.com/hrsh7th/nvim-cmp
-" cmp setup
-" =============================================================================
-lua << EOF
-  local cmp = require("cmp")
-
-  cmp.setup({
-    mapping = {
-       ["<CR>"] = cmp.mapping({
-         i = function(fallback)
-           if cmp.visible() and cmp.get_active_entry() then
-             cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
-           else
-             fallback()
-           end
-         end,
-         s = cmp.mapping.confirm({ select = true }),
-         c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
-       })
-    }
-  })
+vim.diagnostic.config({
+virtual_text = true,
+signs = true,
+update_in_insert = false,
+underline = true,
+severity_sort = false,
+float = true,
+})
 EOF
 
 " =============================================================================
@@ -322,11 +302,11 @@ EOF
 " Enable virtual text
 " =============================================================================
 lua << EOF
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = true
-    }
-  )
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+vim.lsp.diagnostic.on_publish_diagnostics, {
+virtual_text = true
+}
+)
 EOF
 
 " =============================================================================
@@ -334,11 +314,11 @@ EOF
 " :Trouble
 " =============================================================================
 lua << EOF
-  require("trouble").setup {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
-  }
+require("trouble").setup {
+-- your configuration comes here
+-- or leave it empty to use the default settings
+-- refer to the configuration section below
+}
 EOF
 
 " =============================================================================
@@ -354,7 +334,7 @@ augroup fzf
   autocmd!
   autocmd! FileType fzf
   autocmd  FileType fzf set laststatus=0 noshowmode noruler
-    \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+        \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 augroup END
 
 " =============================================================================
