@@ -31,13 +31,14 @@ export EDITOR=nvim
 
 ZSH_THEME="robbyrussell"
 
+# brew install z
+. "$(brew --prefix)/etc/profile.d/z.sh"
+
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
 plugins=(git asdf)
 
 . $ZSH/oh-my-zsh.sh
 
-# brew install z
-. "$(brew --prefix)/etc/profile.d/z.sh"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
