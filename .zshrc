@@ -30,6 +30,9 @@ export EDITOR=nvim
 
 ZSH_THEME="robbyrussell"
 
+# brew
+export PATH="/opt/homebrew/bin:$PATH"
+
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
 plugins=(git asdf)
 
