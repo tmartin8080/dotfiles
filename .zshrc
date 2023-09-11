@@ -37,7 +37,7 @@ plugins=(git asdf)
 . $ZSH/oh-my-zsh.sh
 
 # brew install z
-. /usr/local/etc/profile.d/z.sh
+. "$(brew --prefix)/etc/profile.d/z.sh"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
