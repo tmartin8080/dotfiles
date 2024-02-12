@@ -54,10 +54,7 @@ set undodir=.undo/,~/.undo/,/tmp//
 call plug#begin('~/.config/nvim/autoload/plugged')
 
   " Theme
-  Plug 'sainnhe/edge'
-  Plug 'Mofiqul/vscode.nvim'
-  Plug 'joshdick/onedark.vim'
-  " Plug 'EdenEast/nightfox.nvim'
+  Plug 'navarasu/onedark.nvim'
 
   " Misc
   Plug 'tpope/vim-abolish'
@@ -68,7 +65,6 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'itchyny/lightline.vim'
   Plug 'itchyny/vim-gitbranch'
   Plug 'macthecadillac/lightline-gitdiff'
-  Plug 'ackyshake/vim-fist'                 " Gist handling
   Plug 'djoshea/vim-autoread'               " Auto read edited file
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-endwise'
@@ -127,13 +123,10 @@ call plug#begin('~/.config/nvim/autoload/plugged')
 call plug#end()
 
 " =============================================================================
-" sainnhe/edge https://vimawesome.com/plugin/edge
-"
-" Copy edge theme to lightline:
-" cp ~/.config/nvim/autoload/plugged/edge/autoload/lightline/colorscheme/edge.vim ~/.config/nvim/autoload/plugged/lightline.vim/autoload/lightline/colorscheme
+" https://github.com/navarasu/onedark.nvim
 " =============================================================================
-let g:onedark_style = 'warm'
-let g:onedark_transparent_background = v:true
+" let g:onedark_config = {'style': 'dark', 'transparent': 'false'}
+let g:onedark_config = {'style': 'dark'}
 colorscheme onedark
 set background=dark
 set t_Co=256
@@ -156,6 +149,7 @@ lua <<EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = {"elixir", "yaml", "heex", "markdown", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5", "hcl", "rust"},
   sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
+  auto_install = true,
   -- ignore_install = { "elixir"}, -- List of parsers to ignore installing
   highlight = {
     enable = true,              -- false will disable the whole extension
@@ -215,10 +209,11 @@ endif
 " =============================================================================
 " Lightline
 " https://github.com/itchyny/lightline.vim
+" \   'colorscheme': 'onedark',
 " =============================================================================
+"
 let g:lightline = {}
 let g:lightline = {
-      \   'colorscheme': 'onedark',
       \   'active': {
       \     'left': [['mode', 'paste'],
       \              ['gitbranch', 'gitstatus', 'filename']],
