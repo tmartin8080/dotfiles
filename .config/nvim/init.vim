@@ -209,11 +209,11 @@ endif
 " =============================================================================
 " Lightline
 " https://github.com/itchyny/lightline.vim
-" \   'colorscheme': 'onedark',
+" https://github.com/itchyny/lightline.vim/blob/master/colorscheme.md
 " =============================================================================
 "
-let g:lightline = {}
 let g:lightline = {
+      \   'colorscheme': 'deus',
       \   'active': {
       \     'left': [['mode', 'paste'],
       \              ['gitbranch', 'gitstatus', 'filename']],
