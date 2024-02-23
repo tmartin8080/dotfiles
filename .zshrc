@@ -39,8 +39,9 @@ plugins=(git asdf)
 
 . $ZSH/oh-my-zsh.sh
 
-
+# FZF
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_COMMAND="rg --files --glob '!_build/' --glob '!node_modules/' --glob '!.git/'"
 
 export PATH="/usr/local/sbin:$PATH"
 
