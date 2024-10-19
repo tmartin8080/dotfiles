@@ -37,7 +37,7 @@ nnoremap <silent> <CR> :nohlsearch<CR><CR>
 " NOTE: Format on Save
 autocmd BufWritePost *.exs,*.ex silent :!mix format %
 autocmd BufWritePost *.tf,*.tfvar silent :!terraform fmt %
-autocmd BufWritePost *.js,*.ts silent :!prettier %
+autocmd BufWritePost *.js,*.ts,*.jsx,*.css silent :!prettier -w %
 
 " =============================================================================
 " Swp and temp files
@@ -64,7 +64,8 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'itchyny/lightline.vim'
   Plug 'itchyny/vim-gitbranch'
-  Plug 'macthecadillac/lightline-gitdiff'
+  " TODO: address issue
+  " Plug 'macthecadillac/lightline-gitdiff'
   Plug 'djoshea/vim-autoread'               " Auto read edited file
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-endwise'
@@ -81,6 +82,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'williamboman/mason-lspconfig.nvim'
   Plug 'VonHeikemen/lsp-zero.nvim'
   Plug 'folke/trouble.nvim'
+  Plug 'MunifTanjim/prettier.nvim'
 
   " Autocompletion
   Plug 'hrsh7th/nvim-cmp'
@@ -119,6 +121,8 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   " Open markdown files in Marked.app - mapped to <leader>m
   Plug 'itspriddle/vim-marked', { 'for': 'markdown', 'on': 'MarkedOpen' }
   Plug 'windwp/nvim-autopairs'
+
+  Plug 'github/copilot.vim'
 
 call plug#end()
 
@@ -218,15 +222,9 @@ let g:lightline = {
       \     'left': [['mode', 'paste'],
       \              ['gitbranch', 'gitstatus', 'filename']],
       \     'right': [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok', 'asyncrun_status' ]],
-      \ 'component_function': {
-      \   'gitbranch': 'gitbranch#name'
-      \ },
-      \   },
-      \   'component': {
-      \     'gitstatus': '%<%{lightline_gitdiff#get_status()}',
-      \   },
-      \   'component_visible_condition': {
-      \     'gitstatus': 'lightline_gitdiff#get_status() !=# ""',
+      \     'component_function': {
+      \       'gitbranch': 'gitbranch#name'
+      \     },
       \   },
       \ }
 
@@ -235,10 +233,10 @@ let g:lightline = {
 "
 " https://github.com/macthecadillac/lightline-gitdiff
 " =============================================================================
-let g:lightline_gitdiff#indicator_added ='+'
-let g:lightline_gitdiff#indicator_deleted = '-'
-let g:lightline_gitdiff#indicator_modified = '!'
-let g:lightline_gitdiff#min_winwidth = '70'
+" let g:lightline_gitdiff#indicator_added ='+'
+" let g:lightline_gitdiff#indicator_deleted = '-'
+" let g:lightline_gitdiff#indicator_modified = '!'
+" let g:lightline_gitdiff#min_winwidth = '70'
 
 " =============================================================================
 " vim-commentary
@@ -385,3 +383,9 @@ nmap <leader>* *<c-o>:%s///gn<cr>
 " Plug 'elixir-editors/vim-elixir'
 " =============================================================================
 let g:eelixir_default_subtype = "html"
+
+" =============================================================================
+" Plug 'github/copilot.vim' Ctrl+J to accept
+" =============================================================================
+imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
+let g:copilot_no_tab_map = v:true
