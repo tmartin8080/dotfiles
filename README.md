@@ -26,7 +26,9 @@ Run `just` or `just --list` to see all available commands:
 - `just git` - Configure git settings
 - `just mise` - Install mise tools
 - `just copy-files` - Copy dotfiles (with confirmation)
-- `just copy-files-force` - Copy dotfiles (no confirmation)
+- `just copy-files --force` - Copy dotfiles (no confirmation)
+- `just copy-files --dry-run` - Preview what would be copied
+- `just copy-files --dry-run --force` - Dry run without confirmation
 - `just update` - Update everything (Homebrew, mise, git repo)
 - `just brew-update` - Update Homebrew and packages
 - `just mise-update` - Update mise and tools
@@ -34,7 +36,6 @@ Run `just` or `just --list` to see all available commands:
 - `just validate` - Validate environment setup
 - `just info` - Show system information
 - `just backup` - Backup current dotfiles
-- `just copy-files-dry-run` - Preview what would be copied
 - `just clean` - Clean up Homebrew caches
 
 ## Tool Versions

@@ -12,8 +12,8 @@ postgres = "18.0"
 
 [env]
 # Erlang/Elixir build configuration
-_.erlang.KERL_CONFIGURE_OPTIONS = "--disable-debug --disable-silent-rules --enable-dynamic-ssl-lib --enable-hipe --enable-shared-zlib --enable-smp-support --enable-threads --enable-wx --with-ssl=/opt/homebrew/opt/openssl@1.1 --without-javac --enable-darwin-64bit --enable-kernel-poll --with-dynamic-trace=dtrace"
-_.erlang.ERL_AFLAGS = "-kernel shell_history enabled"
+KERL_CONFIGURE_OPTIONS = "--disable-debug --disable-silent-rules --enable-dynamic-ssl-lib --enable-hipe --enable-shared-zlib --enable-smp-support --enable-threads --enable-wx --with-ssl=/opt/homebrew/opt/openssl@1.1 --without-javac --enable-darwin-64bit --enable-kernel-poll --with-dynamic-trace=dtrace"
+ERL_AFLAGS = "-kernel shell_history enabled"
 
 # PostgreSQL build configuration
-_.postgres.POSTGRES_EXTRA_CONFIGURE_OPTIONS = "--with-openssl --with-libs=/opt/homebrew/opt/openssl@1.1/lib --with-includes=/opt/homebrew/opt/openssl@1.1/include"
+POSTGRES_EXTRA_CONFIGURE_OPTIONS = "--with-openssl --with-libs=/opt/homebrew/opt/openssl@1.1/lib --with-includes=/opt/homebrew/opt/openssl@1.1/include"
