@@ -25,10 +25,11 @@ Run `just` or `just --list` to see all available commands:
 - `just init` - Initialize system dependencies
 - `just git` - Configure git settings
 - `just mise` - Install mise tools
-- `just copy-files` - Copy dotfiles (with confirmation)
+- `just copy-files` - Copy dotfiles (with automatic backup and cleanup)
 - `just copy-files --force` - Copy dotfiles (no confirmation)
 - `just copy-files --dry-run` - Preview what would be copied
-- `just copy-files --dry-run --force` - Dry run without confirmation
+- `just copy-files --no-backup` - Copy without automatic backup
+- `just copy-files --force --no-backup` - Force copy without backup
 - `just update` - Update everything (Homebrew, mise, git repo)
 - `just brew-update` - Update Homebrew and packages
 - `just mise-update` - Update mise and tools
@@ -102,7 +103,9 @@ Benefits:
 - Configuration uses mise for version management (migrated from asdf)
 - Brewfile defines system packages
 - Scripts are idempotent where possible
-- Backup your existing dotfiles before running setup
+- Automatic backup: `just copy-files` automatically backs up existing files before overwriting, then cleans up the backup after successful copy
+- Manual backup: Use `just backup` to create a timestamped backup without copying (backups are stored in `backups/` directory)
+- Skip auto-backup: Use `--no-backup` flag to skip automatic backup/cleanup
 
 ## wxwidgets Brew Issue
 
