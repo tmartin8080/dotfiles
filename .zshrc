@@ -6,26 +6,6 @@ export PATH="/opt/homebrew/bin:$PATH"
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-# Elixir
-export KERL_CONFIGURE_OPTIONS="--disable-debug \
-    --disable-silent-rules \
-    --enable-dynamic-ssl-lib \
-    --enable-hipe \
-    --enable-shared-zlib \
-    --enable-smp-support \
-    --enable-threads \
-    --enable-wx \
-    --with-ssl=$(brew --prefix openssl@1.1) \
-    --without-javac
-    --enable-darwin-64bit \
-    --enable-kernel-poll \
-    --with-dynamic-trace=dtrace"
-export ERL_AFLAGS="-kernel shell_history enabled"
-
-# PG for asdf
-# https://github.com/smashedtoatoms/asdf-postgres/issues/28
-export POSTGRES_EXTRA_CONFIGURE_OPTIONS="--with-openssl --with-libs=/usr/local/opt/openssl@1.1/lib --with-includes=/usr/local/opt/openssl@1.1/include"
-
 export HOMEBREW_EDITOR=nvim
 export EDITOR=nvim
 
@@ -35,9 +15,12 @@ ZSH_THEME="robbyrussell"
 . "$(brew --prefix)/etc/profile.d/z.sh"
 
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
-plugins=(git asdf)
+plugins=(git mise)
 
 . $ZSH/oh-my-zsh.sh
+
+# mise activation
+eval "$(mise activate zsh)"
 
 # FZF
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -67,7 +50,7 @@ alias lsplog="tail -f ~/.cache/nvim/lsp.log"
 alias vimconfig="vim ~/.config/nvim/init.vim"
 alias efmconfig="vim ~/.config/efm-langserver/config.yaml"
 alias ngrokconfig="vim ~/.ngrok2/ngrok.yml"
-alias update-nvim-nightly='asdf uninstall neovim nightly && asdf install neovim nightly'
+alias update-nvim='mise install neovim@latest'
 alias lzd='lazydocker'
 # Kubernetes
 alias k='kubectl'

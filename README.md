@@ -1,31 +1,74 @@
 # Dotfiles
 
-```
-$ make setup
+Personal dotfiles configuration for macOS development environment.
 
-OR
+## Quick Setup
 
-$ make init
-$ make brew
-$ make asdf
-$ make copy-files
+Complete setup with one command:
+```bash
+just setup
 ```
+
+Or run individual steps:
+```bash
+just init          # Install Homebrew, system packages, oh-my-zsh
+just git           # Configure git settings
+just mise          # Install development tools via mise
+just copy-files    # Copy dotfiles to home directory
+```
+
+## Available Commands
+
+Run `just` or `just --list` to see all available commands:
+
+- `just setup` - Complete setup (runs all steps)
+- `just init` - Initialize system dependencies
+- `just git` - Configure git settings
+- `just mise` - Install mise tools
+- `just copy-files` - Copy dotfiles (with automatic backup and cleanup)
+- `just copy-files --force` - Copy dotfiles (no confirmation)
+- `just copy-files --dry-run` - Preview what would be copied
+- `just copy-files --no-backup` - Copy without automatic backup
+- `just copy-files --force --no-backup` - Force copy without backup
+- `just update` - Update everything (Homebrew, mise, git repo)
+- `just brew-update` - Update Homebrew and packages
+- `just mise-update` - Update mise and tools
+- `just versions` - Show current tool versions
+- `just validate` - Validate environment setup
+- `just info` - Show system information
+- `just backup` - Backup current dotfiles
+- `just clean` - Clean up Homebrew caches
+
+## Tool Versions
+
+See `mise.toml` for current tool versions. Key tools:
+- Python 3.13.9
+- Go 1.25.4
+- Erlang 28.1.1
+- Elixir 1.19.2-otp-28
+- Node 25.1.0
+- Neovim 0.11.5
+- Helm 3.19.0
+- Terraform 1.13.5
+- kubectl 1.34.1
+- PostgreSQL 18.0
 
 ## Mac Apps
 
+Recommended apps (install manually):
 - [Iterm2](https://iterm2.com/)
 - [Alfred](https://www.alfredapp.com/)
 - [Magnet](https://apps.apple.com/ca/app/magnet/id441258766?mt=12)
 - [DevSwatch](https://apps.apple.com/ca/app/devswatch/id1477857867?mt=12)
 
-## Iterm2
+## iTerm2 Configuration
 
 1. Load profile from `iterm2/devato.json`
 2. Preferences -> Appearance -> General -> Theme -> Minimal
 3. Preferences -> Appearance -> Dimming -> Disable Dim Background Windows
 4. BG Color: 2B2D36
 
-## Language Servers
+## Neovim Language Servers
 
 From within nvim:
 ```
@@ -34,27 +77,43 @@ From within nvim:
 :LspInstall efm
 ```
 
-## WRK
+## Load Testing with WRK
 
-```
+```bash
 brew install wrk
 wrk -t4 -c100 -d30S --timeout 2000 "http://127.0.0.1:4000"
 ```
 
-## Syntax highlighting
-- using nvim-treesitter 
+## Syntax Highlighting
 
-# wxwidgets brew issue
+Using nvim-treesitter for syntax highlighting.
 
+## Migration from Make
+
+This project now uses `just` instead of Make for task automation. The old Makefile and numbered bash scripts (0.init.sh, 1.git.sh, etc.) have been migrated to the justfile and moved to the scripts/ directory.
+
+Benefits:
+- Better help text and documentation
+- More powerful recipe dependencies
+- Cleaner syntax and error handling
+- Additional utility commands (update, validate, backup, etc.)
+
+## Notes
+
+- Configuration uses mise for version management (migrated from asdf)
+- Brewfile defines system packages
+- Scripts are idempotent where possible
+- Automatic backup: `just copy-files` automatically backs up existing files before overwriting, then cleans up the backup after successful copy
+- Manual backup: Use `just backup` to create a timestamped backup without copying (backups are stored in `backups/` directory)
+- Skip auto-backup: Use `--no-backup` flag to skip automatic backup/cleanup
+
+## wxwidgets Brew Issue
+
+Legacy workaround for Erlang compatibility (preserved for older systems):
 - https://github.com/asdf-vm/asdf-erlang/issues/248
 - https://github.com/erlang/otp/issues/5893
-- https://remarkablemark.org/blog/2017/02/03/install-brew-package-version/
-- https://github.com/erlang/otp/commit/c2eb69239622046093c25e986dd606ea339c59a9
-- https://stackoverflow.com/a/67656458
-- https://stackoverflow.com/questions/13477363/how-can-i-brew-link-a-specific-version
 
-# workaround for wxwidgets issue
-```
+```bash
 brew install wxwidgets
 brew unlink wxwidgets
 brew tap laggardkernel/tap
@@ -63,6 +122,3 @@ brew install ./wxwidgets.rb
 brew switch wxwidgets 3.1.5
 brew pin wxwidgets
 ```
-
-## Current Versions
-- nvim - `v0.8.0-dev+547-ge837f29ce`
