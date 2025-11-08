@@ -1,0 +1,19 @@
+[tools]
+python = "3.13.9"
+golang = "1.25.4"
+erlang = "28.1.1"
+elixir = "1.19.2-otp-28"
+node = "25.1.0"
+neovim = "0.11.5"
+helm = "3.19.0"
+terraform = "1.13.5"
+kubectl = "1.34.1"
+postgres = "18.0"
+
+[env]
+# Erlang/Elixir build configuration
+_.erlang.KERL_CONFIGURE_OPTIONS = "--disable-debug --disable-silent-rules --enable-dynamic-ssl-lib --enable-hipe --enable-shared-zlib --enable-smp-support --enable-threads --enable-wx --with-ssl=/opt/homebrew/opt/openssl@1.1 --without-javac --enable-darwin-64bit --enable-kernel-poll --with-dynamic-trace=dtrace"
+_.erlang.ERL_AFLAGS = "-kernel shell_history enabled"
+
+# PostgreSQL build configuration
+_.postgres.POSTGRES_EXTRA_CONFIGURE_OPTIONS = "--with-openssl --with-libs=/opt/homebrew/opt/openssl@1.1/lib --with-includes=/opt/homebrew/opt/openssl@1.1/include"
