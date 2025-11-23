@@ -14,6 +14,7 @@ git config --global pull.rebase true
 # Set up global gitignore
 echo "Setting up global gitignore..."
 echo .DS_Store >> ~/.gitignore_global
+echo .claude/ >> ~/.gitignore_global
 git config --global core.excludesfile ~/.gitignore_global
 
 # Configure git user
