@@ -59,7 +59,28 @@ fi
 echo "Activating mise..."
 eval "$(mise activate bash)"
 
-echo "Installing all tools from mise.toml..."
+echo "Configuring global mise..."
+mkdir -p "$HOME/.config/mise"
+
+# Copy mise.toml to global config
+REPO_CONFIG="$(pwd)/mise.toml"
+GLOBAL_CONFIG="$HOME/.config/mise/config.toml"
+
+if [ -f "$GLOBAL_CONFIG" ]; then
+  # Check if it's a symlink (which we want to replace with a real file)
+  if [ -L "$GLOBAL_CONFIG" ]; then
+    echo "  • Removing existing symlink..."
+    rm "$GLOBAL_CONFIG"
+  else
+    echo "  • Backing up existing global config..."
+    mv "$GLOBAL_CONFIG" "${GLOBAL_CONFIG}.backup-$(date +%Y%m%d-%H%M%S)"
+  fi
+fi
+
+echo "  • Copying $REPO_CONFIG to $GLOBAL_CONFIG"
+cp "$REPO_CONFIG" "$GLOBAL_CONFIG"
+
+echo "Installing all tools from global config..."
 mise install
 
 echo "Trusting the local mise.toml configuration..."
