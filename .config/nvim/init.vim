@@ -80,7 +80,6 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'neovim/nvim-lspconfig'
   Plug 'williamboman/mason.nvim'
   Plug 'williamboman/mason-lspconfig.nvim'
-  Plug 'VonHeikemen/lsp-zero.nvim'
   Plug 'folke/trouble.nvim'
   Plug 'MunifTanjim/prettier.nvim'
 
@@ -275,19 +274,8 @@ nnoremap <silent>rn <cmd>lua vim.lsp.buf.rename()<CR>
 set completeopt=menu,menuone,noselect
 
 lua << EOF
-  local lsp = require('lsp-zero')
-
-  lsp.preset('recommended')
-  lsp.setup()
-
-  vim.diagnostic.config({
-    virtual_text = true,
-    signs = true,
-    update_in_insert = false,
-    underline = true,
-    severity_sort = false,
-    float = true,
-  })
+  vim.lsp.enable('expert')
+  vim.lsp.enable('gopls')
 EOF
 
 " =============================================================================
@@ -387,5 +375,5 @@ let g:eelixir_default_subtype = "html"
 " =============================================================================
 " Plug 'github/copilot.vim' Ctrl+J to accept
 " =============================================================================
-imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
-let g:copilot_no_tab_map = v:true
+" imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
+" let g:copilot_no_tab_map = v:true
