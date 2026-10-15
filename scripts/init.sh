@@ -6,6 +6,9 @@
 
 set -e
 
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_DIR"
+
 # Install Xcode command line tools (skip if already installed)
 if ! xcode-select -p &>/dev/null; then
   echo "Installing Xcode command line tools..."
@@ -19,15 +22,22 @@ else
   echo "Xcode command line tools already installed"
 fi
 
+# Ensure existing Homebrew installation is on PATH before checking
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 # Install Homebrew if not present
 if ! command -v brew &>/dev/null; then
   echo "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
   # Ensure brew is on PATH for the rest of this script
-  if [ -f /opt/homebrew/bin/brew ]; then
+  if [ -x /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
-  elif [ -f /usr/local/bin/brew ]; then
+  elif [ -x /usr/local/bin/brew ]; then
     eval "$(/usr/local/bin/brew shellenv)"
   fi
 else
@@ -41,7 +51,26 @@ brew upgrade
 BREW_PREFIX=$(brew --prefix)
 
 echo "Installing packages from Brewfile..."
-HOMEBREW_BUNDLE_NO_LOCK=TRUE HOMEBREW_NO_INSTALL_CLEANUP=TRUE brew bundle --file="Brewfile"
+HOMEBREW_NO_INSTALL_CLEANUP=TRUE brew bundle --file="$REPO_DIR/Brewfile"
+
+# Ensure z (directory jumper) is installed and initialized
+if [ ! -f "${BREW_PREFIX}/etc/profile.d/z.sh" ]; then
+  echo "Installing z..."
+  brew install z
+else
+  echo "z already installed (${BREW_PREFIX}/etc/profile.d/z.sh)"
+fi
+
+if [ -d "$HOME/.z" ]; then
+  echo "Removing invalid ~/.z directory so z can create its datafile..."
+  rm -rf "$HOME/.z"
+fi
+if [ ! -f "$HOME/.z" ]; then
+  touch "$HOME/.z"
+fi
+if ! grep -qF "${REPO_DIR}|" "$HOME/.z" 2>/dev/null; then
+  echo "${REPO_DIR}|1|$(date +%s)" >> "$HOME/.z"
+fi
 
 # Create sha256sum symlink if needed (handle stale symlinks)
 if [ -L "${BREW_PREFIX}/bin/sha256sum" ] && [ ! -e "${BREW_PREFIX}/bin/sha256sum" ]; then
@@ -59,10 +88,10 @@ else
   echo "sha256sum already available"
 fi
 
-# Install oh-my-zsh if not present
+# Install oh-my-zsh if not present (keep existing .zshrc if present)
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo "Installing oh-my-zsh..."
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 else
   echo "oh-my-zsh already installed"
 fi
@@ -84,5 +113,19 @@ fi
 
 echo "Activating mise..."
 eval "$(mise activate bash)"
+mise trust "$REPO_DIR/mise.toml" 2>/dev/null || true
+
+# Ensure Neovim is installed via mise so the editor is ready immediately
+if ! command -v nvim &>/dev/null; then
+  echo "Installing Neovim via mise..."
+  mise install neovim
+  eval "$(mise activate bash)"
+else
+  echo "Neovim already installed ($(nvim --version | head -1))"
+fi
+
+# Copy dotfiles (.zshrc, .fzf.zsh, .config/nvim, etc.) and sync Neovim plugins
+echo "Syncing dotfiles and Neovim plugins..."
+"$REPO_DIR/scripts/copy-files.sh" --force --no-reload --no-pull
 
 echo "System initialization complete!"

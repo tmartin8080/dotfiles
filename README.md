@@ -4,17 +4,22 @@ Personal dotfiles configuration for macOS development environment.
 
 ## Quick Setup
 
-Complete setup with one command:
+On a brand-new Mac (before Homebrew or `just` are installed), bootstrap with:
+```bash
+./scripts/init.sh  # Installs Homebrew, Brewfile (including just, z, gh), oh-my-zsh, mise, Neovim + plugins, and copies dotfiles
+```
+
+Complete setup (including all `mise.toml` language runtimes and git config) with one command:
 ```bash
 just setup
 ```
 
 Or run individual steps:
 ```bash
-just init          # Install Homebrew, system packages, oh-my-zsh
+just init          # Install Homebrew, system packages, oh-my-zsh, Neovim, and sync dotfiles
 just git           # Configure git settings
-just mise          # Install development tools via mise
-just copy-files    # Copy dotfiles to home directory
+just mise          # Install all development tools via mise
+just copy-files    # Copy dotfiles to home directory and sync Neovim plugins
 ```
 
 ## Available Commands
@@ -25,11 +30,12 @@ Run `just` or `just --list` to see all available commands:
 - `just init` - Initialize system dependencies
 - `just git` - Configure git settings
 - `just mise` - Install mise tools
-- `just copy-files` - Copy dotfiles (with automatic backup and cleanup)
+- `just copy-files` - Copy dotfiles (with automatic backup of modified files and Neovim plugin sync)
 - `just copy-files --force` - Copy dotfiles (no confirmation)
 - `just copy-files --dry-run` - Preview what would be copied
 - `just copy-files --no-backup` - Copy without automatic backup
 - `just copy-files --force --no-backup` - Force copy without backup
+- `just nvim` - Install/update Neovim plugins headlessly
 - `just update` - Update everything (Homebrew, mise, git repo)
 - `just brew-update` - Update Homebrew and packages
 - `just mise-update` - Update mise and tools
@@ -102,10 +108,10 @@ Benefits:
 
 - Configuration uses mise for version management (migrated from asdf)
 - Brewfile defines system packages
-- Scripts are idempotent where possible
-- Automatic backup: `just copy-files` automatically backs up existing files before overwriting, then cleans up the backup after successful copy
+- Scripts are completely idempotent and safe to run repeatedly
+- Automatic backup: `just copy-files` automatically backs up any existing files in `$HOME` whose contents differ before overwriting (stored in `backups/`)
 - Manual backup: Use `just backup` to create a timestamped backup without copying (backups are stored in `backups/` directory)
-- Skip auto-backup: Use `--no-backup` flag to skip automatic backup/cleanup
+- Skip auto-backup: Use `--no-backup` flag to skip automatic backup
 
 ## wxwidgets Brew Issue
 

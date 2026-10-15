@@ -1,13 +1,23 @@
 # Setup fzf
 # ---------
-if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
-  export PATH="${PATH:+${PATH}:}/usr/local/opt/fzf/bin"
+if [ -d /opt/homebrew/opt/fzf ]; then
+  FZF_BASE="/opt/homebrew/opt/fzf"
+elif [ -d /usr/local/opt/fzf ]; then
+  FZF_BASE="/usr/local/opt/fzf"
+elif command -v brew >/dev/null 2>&1 && [ -d "$(brew --prefix)/opt/fzf" ]; then
+  FZF_BASE="$(brew --prefix)/opt/fzf"
 fi
 
-# Auto-completion
-# ---------------
-[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
+if [ -n "$FZF_BASE" ]; then
+  if [[ ! "$PATH" == *"$FZF_BASE/bin"* ]]; then
+    export PATH="${PATH:+${PATH}:}$FZF_BASE/bin"
+  fi
 
-# Key bindings
-# ------------
-source "/usr/local/opt/fzf/shell/key-bindings.bash"
+  # Auto-completion
+  # ---------------
+  [[ $- == *i* ]] && [ -f "$FZF_BASE/shell/completion.bash" ] && source "$FZF_BASE/shell/completion.bash" 2> /dev/null
+
+  # Key bindings
+  # ------------
+  [ -f "$FZF_BASE/shell/key-bindings.bash" ] && source "$FZF_BASE/shell/key-bindings.bash"
+fi

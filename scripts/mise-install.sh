@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 # Install development tools via mise
+#
+# This script is idempotent — safe to run multiple times.
 
 set -e
+
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_DIR"
+
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 
 # Remove asdf if it exists
 echo "Checking for asdf installation..."
@@ -62,29 +69,32 @@ eval "$(mise activate bash)"
 echo "Configuring global mise..."
 mkdir -p "$HOME/.config/mise"
 
-# Copy mise.toml to global config
-REPO_CONFIG="$(pwd)/mise.toml"
+# Copy mise.toml to global config (idempotent)
+REPO_CONFIG="$REPO_DIR/mise.toml"
 GLOBAL_CONFIG="$HOME/.config/mise/config.toml"
 
-if [ -f "$GLOBAL_CONFIG" ]; then
-  # Check if it's a symlink (which we want to replace with a real file)
-  if [ -L "$GLOBAL_CONFIG" ]; then
-    echo "  • Removing existing symlink..."
-    rm "$GLOBAL_CONFIG"
-  else
+if [ -L "$GLOBAL_CONFIG" ]; then
+  echo "  • Removing existing symlink..."
+  rm "$GLOBAL_CONFIG"
+fi
+
+if [ -f "$GLOBAL_CONFIG" ] && cmp -s "$REPO_CONFIG" "$GLOBAL_CONFIG"; then
+  echo "  • Global config ($GLOBAL_CONFIG) already up to date"
+else
+  if [ -f "$GLOBAL_CONFIG" ]; then
     echo "  • Backing up existing global config..."
     mv "$GLOBAL_CONFIG" "${GLOBAL_CONFIG}.backup-$(date +%Y%m%d-%H%M%S)"
   fi
+  echo "  • Copying $REPO_CONFIG to $GLOBAL_CONFIG"
+  cp "$REPO_CONFIG" "$GLOBAL_CONFIG"
 fi
 
-echo "  • Copying $REPO_CONFIG to $GLOBAL_CONFIG"
-cp "$REPO_CONFIG" "$GLOBAL_CONFIG"
+echo "Trusting mise configuration..."
+mise trust "$REPO_CONFIG"
+mise trust "$GLOBAL_CONFIG" 2>/dev/null || true
 
 echo "Installing all tools from global config..."
 mise install
-
-echo "Trusting the local mise.toml configuration..."
-mise trust
 
 echo "Mise tools installation complete!"
 echo "Run 'mise list' to see installed versions"
