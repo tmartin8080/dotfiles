@@ -29,8 +29,8 @@ git config --global user.name "$GIT_USER"
 git config --global user.email "$GIT_EMAIL"
 
 # Custom configs for convenience
-git config --global --add --bool push.autoSetupRemote true
+git config --global --replace-all --bool push.autoSetupRemote true
 git config --global init.defaultBranch main
-git config --global --add url."git@github.com:".insteadOf "https://github.com/"
+git config --global --replace-all url."git@github.com:".insteadOf "https://github.com/"
 
 echo "Git configuration complete!"

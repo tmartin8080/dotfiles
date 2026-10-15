@@ -1,7 +1,7 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
 export PATH="/opt/homebrew/opt/openssl/bin:$PATH"
-export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -11,16 +11,22 @@ export EDITOR=nvim
 
 ZSH_THEME="robbyrussell"
 
-# brew install z
-. "$(brew --prefix)/etc/profile.d/z.sh"
-
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
 plugins=(git mise)
 
-. $ZSH/oh-my-zsh.sh
+[ -f "$ZSH/oh-my-zsh.sh" ] && . "$ZSH/oh-my-zsh.sh"
+
+# brew install z
+if [ -f /opt/homebrew/etc/profile.d/z.sh ]; then
+  . /opt/homebrew/etc/profile.d/z.sh
+elif command -v brew >/dev/null 2>&1 && [ -f "$(brew --prefix)/etc/profile.d/z.sh" ]; then
+  . "$(brew --prefix)/etc/profile.d/z.sh"
+fi
 
 # mise activation
-eval "$(mise activate zsh)"
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
 
 # FZF
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -29,7 +35,9 @@ export FZF_DEFAULT_COMMAND="rg --files --glob '!_build/' --glob '!node_modules/'
 export PATH="/usr/local/sbin:$PATH"
 
 autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /usr/local/bin/terraform terraform
+if command -v terraform >/dev/null 2>&1; then
+  complete -o nospace -C "$(command -v terraform)" terraform
+fi
 
 if type nvim > /dev/null 2>&1; then
   alias vim='nvim'

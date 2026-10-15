@@ -100,8 +100,13 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   Plug 'slime-lang/vim-slime-syntax'
 
   " Other
-  Plug '/usr/local/opt/fzf'
-  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+  if isdirectory('/opt/homebrew/opt/fzf')
+    Plug '/opt/homebrew/opt/fzf'
+  elseif isdirectory('/usr/local/opt/fzf')
+    Plug '/usr/local/opt/fzf'
+  else
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+  endif
   Plug 'junegunn/fzf.vim'
   Plug 'voldikss/vim-floaterm'
   Plug 'Joorem/vim-haproxy'
@@ -111,7 +116,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
   " Treesitter - syntax and highlighting
   " :TSInstall query
   " :TSPlaygroundToggle
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+  Plug 'nvim-treesitter/nvim-treesitter', {'branch': 'master', 'do': ':TSUpdate'}  " We recommend updating the parsers on update
   Plug 'nvim-treesitter/playground'
 
   " single/multi line code handler: gS - split one line into multiple, gJ - combine multiple lines into one
@@ -130,7 +135,7 @@ call plug#end()
 " =============================================================================
 " let g:onedark_config = {'style': 'dark', 'transparent': 'false'}
 let g:onedark_config = {'style': 'dark'}
-colorscheme onedark
+silent! colorscheme onedark
 set background=dark
 set t_Co=256
 set laststatus=2
@@ -149,39 +154,42 @@ set noshowmode
 "
 " =============================================================================
 lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = {"elixir", "yaml", "heex", "markdown", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5", "hcl", "rust"},
-  sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
-  auto_install = true,
-  -- ignore_install = { "elixir"}, -- List of parsers to ignore installing
-  highlight = {
-    enable = true,              -- false will disable the whole extension
-    -- disable = { "c", "rust" },  -- list of language that will be disabled
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = true,
-  },
-  playground = {
-    enable = true,
-    disable = {},
-    updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
-    persist_queries = false, -- Whether the query persists across vim sessions
-    keybindings = {
-      toggle_query_editor = 'o',
-      toggle_hl_groups = 'i',
-      toggle_injected_languages = 't',
-      toggle_anonymous_nodes = 'a',
-      toggle_language_display = 'I',
-      focus_language = 'f',
-      unfocus_language = 'F',
-      update = 'R',
-      goto_node = '<cr>',
-      show_help = '?',
+local ts_ok, ts_configs = pcall(require, 'nvim-treesitter.configs')
+if ts_ok then
+  ts_configs.setup {
+    ensure_installed = {"elixir", "yaml", "heex", "markdown", "query", "javascript", "vim", "dockerfile", "bash", "lua", "html", "scss", "css", "json", "json5", "hcl", "rust"},
+    sync_install = (#vim.api.nvim_list_uis() == 0), -- install languages synchronously in headless mode (only applied to `ensure_installed`)
+    auto_install = true,
+    -- ignore_install = { "elixir"}, -- List of parsers to ignore installing
+    highlight = {
+      enable = true,              -- false will disable the whole extension
+      -- disable = { "c", "rust" },  -- list of language that will be disabled
+      -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+      -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+      -- Using this option may slow down your editor, and you may see some duplicate highlights.
+      -- Instead of true it can also be a list of languages
+      additional_vim_regex_highlighting = true,
     },
+    playground = {
+      enable = true,
+      disable = {},
+      updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+      persist_queries = false, -- Whether the query persists across vim sessions
+      keybindings = {
+        toggle_query_editor = 'o',
+        toggle_hl_groups = 'i',
+        toggle_injected_languages = 't',
+        toggle_anonymous_nodes = 'a',
+        toggle_language_display = 'I',
+        focus_language = 'f',
+        unfocus_language = 'F',
+        update = 'R',
+        goto_node = '<cr>',
+        show_help = '?',
+      },
+    }
   }
-  }
+end
 EOF
 
 " =============================================================================
@@ -252,7 +260,10 @@ autocmd FileType terraform setlocal commentstring=#\ %s
 " https://github.com/windwp/nvim-autopairs
 " =============================================================================
 lua << END
-  require('nvim-autopairs').setup()
+  local ap_ok, autopairs = pcall(require, 'nvim-autopairs')
+  if ap_ok then
+    autopairs.setup()
+  end
 END
 
 " =============================================================================
@@ -274,8 +285,10 @@ nnoremap <silent>rn <cmd>lua vim.lsp.buf.rename()<CR>
 set completeopt=menu,menuone,noselect
 
 lua << EOF
-  vim.lsp.enable('expert')
-  vim.lsp.enable('gopls')
+  if vim.lsp and vim.lsp.enable then
+    vim.lsp.enable('expert')
+    vim.lsp.enable('gopls')
+  end
 EOF
 
 " =============================================================================
@@ -283,23 +296,24 @@ EOF
 " cmp setup
 " =============================================================================
 lua << EOF
-  local cmp = require("cmp")
-
-  cmp.setup({
-    mapping = {
-       ["<CR>"] = cmp.mapping({
-         i = function(fallback)
-           if cmp.visible() and cmp.get_active_entry() then
-             cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
-           else
-             fallback()
-           end
-         end,
-         s = cmp.mapping.confirm({ select = true }),
-         c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
-       })
-    }
-  })
+  local cmp_ok, cmp = pcall(require, "cmp")
+  if cmp_ok then
+    cmp.setup({
+      mapping = {
+         ["<CR>"] = cmp.mapping({
+           i = function(fallback)
+             if cmp.visible() and cmp.get_active_entry() then
+               cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+             else
+               fallback()
+             end
+           end,
+           s = cmp.mapping.confirm({ select = true }),
+           c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
+         })
+      }
+    })
+  end
 EOF
 
 " =============================================================================
@@ -307,11 +321,9 @@ EOF
 " Enable virtual text
 " =============================================================================
 lua << EOF
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = true
-    }
-  )
+  vim.diagnostic.config({
+    virtual_text = true
+  })
 EOF
 
 " =============================================================================
@@ -319,11 +331,14 @@ EOF
 " :Trouble
 " =============================================================================
 lua << EOF
-require("trouble").setup {
--- your configuration comes here
--- or leave it empty to use the default settings
--- refer to the configuration section below
-}
+local trouble_ok, trouble = pcall(require, "trouble")
+if trouble_ok then
+  trouble.setup {
+  -- your configuration comes here
+  -- or leave it empty to use the default settings
+  -- refer to the configuration section below
+  }
+end
 EOF
 
 " =============================================================================

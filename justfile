@@ -1,12 +1,15 @@
 # Dotfiles Management
 # Run 'just' or 'just --list' to see available commands
 
+export PATH := env_var_or_default("HOME", "") + "/.local/bin:/opt/homebrew/bin:/usr/local/bin:" + env_var_or_default("PATH", "")
+
 # Default recipe shows help
 default:
     @just --list
 
-# Complete setup - runs all setup steps in order
-setup: init git mise copy-files
+# Complete setup - runs all setup steps in order (non-interactive, idempotent)
+setup: init git mise
+    @./scripts/copy-files.sh --force --no-reload
     @echo "Setup complete! Restart your shell or run: exec zsh"
 
 # Initialize system dependencies (Homebrew, tools, oh-my-zsh)
@@ -25,113 +28,26 @@ mise:
     @./scripts/mise-install.sh
 
 # Copy dotfiles to home directory
-# Usage: just copy-files [--dry-run] [--force] [--no-backup]
-# --dry-run: Show what would be copied without making changes
-# --force: Skip confirmation prompt
-# --no-backup: Skip automatic backup before copying
-copy-files dry_run="" force="" no_backup="":
+# Usage: just copy-files [--dry-run|-n] [--force|-f] [--no-backup] [--no-pull] [--no-reload]
+copy-files *args:
+    @./scripts/copy-files.sh {{args}}
+
+# Install or update Neovim plugins via vim-plug
+nvim:
     #!/usr/bin/env bash
     set -e
-
-    BACKUP_DIR=""
-    RSYNC_EXCLUDES=(
-        --exclude ".git/"
-        --exclude ".gitignore"
-        --exclude ".DS_Store"
-        --exclude ".osx"
-        --exclude "scripts/"
-        --exclude "README.md"
-        --exclude "Makefile"
-        --exclude "justfile"
-        --exclude "Brewfile"
-        --exclude "Brewfile.lock.json"
-        --exclude "wxwidgets.rb"
-        --exclude "iterm2"
-        --exclude "backups/"
-        --exclude ".claude/"
-        --exclude "*.sh"
-    )
-
-    DRY_RUN_FLAG=""
-    if [ "{{dry_run}}" == "--dry-run" ]; then
-        DRY_RUN_FLAG="n"
-        echo "==> Dry run - files that would be copied:"
-    elif [ "{{force}}" == "--force" ]; then
-        echo "==> Copying dotfiles to home directory (forced)..."
-    else
-        echo "==> Copying dotfiles to home directory..."
+    if command -v mise &>/dev/null; then
+        eval "$(mise activate bash)" 2>/dev/null || true
     fi
-
-    # Only pull and prompt if not dry-run
-    if [ "{{dry_run}}" != "--dry-run" ]; then
-        cd "$(dirname "${BASH_SOURCE}")/../.."
-        git pull origin main
-
-        if [ "{{force}}" != "--force" ]; then
-            read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1
-            echo ""
-            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-                echo "Copy cancelled."
-                exit 0
-            fi
-        fi
-
-        # Create backup before copying (unless --no-backup flag is set)
-        if [ "{{no_backup}}" != "--no-backup" ]; then
-            BACKUP_DIR="backups/$(date +%Y%m%d-%H%M%S)"
-            echo ""
-            echo "==> Creating backup in $BACKUP_DIR..."
-            mkdir -p "$BACKUP_DIR"
-
-            # Get list of files that will be copied (exist in both source and destination)
-            BACKUP_COUNT=0
-            while IFS= read -r file; do
-                # Remove leading './' from file path
-                file="${file#./}"
-                # Skip directories (rsync output ends directories with /)
-                if [[ "$file" != */ ]] && [ -f ~/"$file" ]; then
-                    # Create parent directory structure in backup
-                    mkdir -p "$BACKUP_DIR/$(dirname "$file")"
-                    cp ~/"$file" "$BACKUP_DIR/$file"
-                    BACKUP_COUNT=$((BACKUP_COUNT + 1))
-                fi
-            done < <(rsync "${RSYNC_EXCLUDES[@]}" -avn --no-perms . ~ | grep -E '^[^/]*/' | sed 's/^[^ ]* //')
-
-            if [ $BACKUP_COUNT -eq 0 ]; then
-                echo "No existing files to backup (fresh install)"
-                rmdir "$BACKUP_DIR" 2>/dev/null || true
-                BACKUP_DIR=""
-            else
-                echo "Backed up $BACKUP_COUNT file(s) to $BACKUP_DIR"
-            fi
-        fi
+    if ! command -v nvim &>/dev/null; then
+        echo "==> Installing neovim via mise..."
+        mise install neovim
+        eval "$(mise activate bash)"
     fi
-
-    # Execute rsync with conditional dry-run flag
-    rsync "${RSYNC_EXCLUDES[@]}" -av${DRY_RUN_FLAG}h --no-perms . ~
-
-    if [ "{{dry_run}}" != "--dry-run" ]; then
-        echo ""
-        echo "Dotfiles copied successfully!"
-
-        # Clean up backup after successful copy (unless --no-backup flag is set)
-        if [ "{{no_backup}}" != "--no-backup" ] && [ -n "$BACKUP_DIR" ] && [ -d "$BACKUP_DIR" ]; then
-            echo ""
-            echo "==> Cleaning up backup..."
-            rm -rf "$BACKUP_DIR"
-            echo "Backup removed: $BACKUP_DIR"
-            echo ""
-            echo "Note: Backups are automatically cleaned up after successful copy."
-            echo "      To keep backups, use: just copy-files --no-backup"
-            echo "      Or use: just backup (to backup without copying)"
-        fi
-
-        if [ "{{force}}" != "--force" ]; then
-            echo ""
-            echo "Restarting zsh..."
-            exec zsh
-        fi
-    fi
+    echo "==> Installing/updating Neovim plugins..."
+    nvim --headless "+PlugInstall --sync" +qall
+    nvim --headless +qall
+    echo "==> Neovim plugins ready!"
 
 # Update Homebrew and all installed packages
 brew-update:
@@ -185,15 +101,19 @@ info:
 
 # Backup current dotfiles from home directory
 backup:
-    @echo "==> Backing up current dotfiles..."
-    @mkdir -p backups/$(date +%Y%m%d-%H%M%S)
-    @for file in .zshrc .vimrc .gitconfig .gitignore_global; do \
-        if [ -f ~/$file ]; then \
-            cp ~/$file backups/$(date +%Y%m%d-%H%M%S)/$file; \
-            echo "Backed up $file"; \
-        fi; \
+    #!/usr/bin/env bash
+    set -e
+    BACKUP_DIR="backups/$(date +%Y%m%d-%H%M%S)"
+    echo "==> Backing up current dotfiles to $BACKUP_DIR..."
+    mkdir -p "$BACKUP_DIR"
+    for file in .zshrc .fzf.zsh .fzf.bash .vimrc .gitconfig .gitignore_global .config/nvim/init.vim .config/efm-langserver/config.yaml .config/mise/config.toml; do
+        if [ -f "$HOME/$file" ]; then
+            mkdir -p "$BACKUP_DIR/$(dirname "$file")"
+            cp "$HOME/$file" "$BACKUP_DIR/$file"
+            echo "  Backed up $file"
+        fi
     done
-    @echo "Backup complete in backups/$(date +%Y%m%d-%H%M%S)"
+    echo "Backup complete in $BACKUP_DIR"
 
 # Check for outdated Homebrew packages
 brew-outdated:
@@ -212,12 +132,36 @@ mise-trust:
 
 # Validate the environment setup
 validate:
-    @echo "==> Validating environment setup..."
-    @echo "Checking required tools..."
-    @command -v brew >/dev/null 2>&1 && echo "✓ Homebrew installed" || echo "✗ Homebrew missing"
-    @command -v mise >/dev/null 2>&1 && echo "✓ mise installed" || echo "✗ mise missing"
-    @command -v git >/dev/null 2>&1 && echo "✓ git installed" || echo "✗ git missing"
-    @command -v zsh >/dev/null 2>&1 && echo "✓ zsh installed" || echo "✗ zsh missing"
-    @echo ""
-    @echo "Checking mise tools..."
-    @mise list 2>/dev/null || echo "✗ mise tools not installed"
+    #!/usr/bin/env bash
+    set -e
+    echo "==> Validating environment setup..."
+    echo "Checking required tools..."
+    command -v brew >/dev/null 2>&1 && echo "✓ Homebrew installed" || echo "✗ Homebrew missing"
+    command -v mise >/dev/null 2>&1 && echo "✓ mise installed" || echo "✗ mise missing"
+    command -v git >/dev/null 2>&1 && echo "✓ git installed" || echo "✗ git missing"
+    command -v zsh >/dev/null 2>&1 && echo "✓ zsh installed" || echo "✗ zsh missing"
+    if command -v brew >/dev/null 2>&1 && [ -f "$(brew --prefix)/etc/profile.d/z.sh" ]; then
+        echo "✓ z installed ($(brew --prefix)/etc/profile.d/z.sh)"
+    else
+        echo "✗ z missing"
+    fi
+    if command -v mise >/dev/null 2>&1; then
+        eval "$(mise activate bash)" 2>/dev/null || true
+    fi
+    if command -v nvim >/dev/null 2>&1; then
+        echo "✓ neovim installed ($(nvim --version | head -n1))"
+    else
+        echo "✗ neovim missing"
+    fi
+    echo ""
+    echo "Checking dotfiles in $HOME..."
+    for f in .zshrc .fzf.zsh .fzf.bash .config/nvim/init.vim .config/efm-langserver/config.yaml .config/mise/config.toml; do
+        if [ -f "$HOME/$f" ]; then
+            echo "✓ ~/$f present"
+        else
+            echo "✗ ~/$f missing"
+        fi
+    done
+    echo ""
+    echo "Checking mise tools..."
+    mise list 2>/dev/null || echo "✗ mise tools not installed"
