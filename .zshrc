@@ -75,4 +75,4 @@ function nukedocker-volumes() {
 	docker volume rm `docker volume ls -q`
 }
 
-. "$HOME/.cargo/env"
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
