@@ -51,7 +51,7 @@ brew upgrade
 BREW_PREFIX=$(brew --prefix)
 
 echo "Installing packages from Brewfile..."
-HOMEBREW_BUNDLE_NO_LOCK=TRUE HOMEBREW_NO_INSTALL_CLEANUP=TRUE brew bundle --file="$REPO_DIR/Brewfile"
+HOMEBREW_NO_INSTALL_CLEANUP=TRUE brew bundle --file="$REPO_DIR/Brewfile"
 
 # Ensure z (directory jumper) is installed and initialized
 if [ ! -f "${BREW_PREFIX}/etc/profile.d/z.sh" ]; then
@@ -113,5 +113,19 @@ fi
 
 echo "Activating mise..."
 eval "$(mise activate bash)"
+mise trust "$REPO_DIR/mise.toml" 2>/dev/null || true
+
+# Ensure Neovim is installed via mise so the editor is ready immediately
+if ! command -v nvim &>/dev/null; then
+  echo "Installing Neovim via mise..."
+  mise install neovim
+  eval "$(mise activate bash)"
+else
+  echo "Neovim already installed ($(nvim --version | head -1))"
+fi
+
+# Copy dotfiles (.zshrc, .fzf.zsh, .config/nvim, etc.) and sync Neovim plugins
+echo "Syncing dotfiles and Neovim plugins..."
+"$REPO_DIR/scripts/copy-files.sh" --force --no-reload --no-pull
 
 echo "System initialization complete!"

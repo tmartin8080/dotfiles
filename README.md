@@ -4,17 +4,22 @@ Personal dotfiles configuration for macOS development environment.
 
 ## Quick Setup
 
-Complete setup with one command:
+On a brand-new Mac (before Homebrew or `just` are installed), bootstrap with:
+```bash
+./scripts/init.sh  # Installs Homebrew, Brewfile (including just, z, gh), oh-my-zsh, mise, Neovim + plugins, and copies dotfiles
+```
+
+Complete setup (including all `mise.toml` language runtimes and git config) with one command:
 ```bash
 just setup
 ```
 
 Or run individual steps:
 ```bash
-just init          # Install Homebrew, system packages, oh-my-zsh
+just init          # Install Homebrew, system packages, oh-my-zsh, Neovim, and sync dotfiles
 just git           # Configure git settings
-just mise          # Install development tools via mise
-just copy-files    # Copy dotfiles to home directory
+just mise          # Install all development tools via mise
+just copy-files    # Copy dotfiles to home directory and sync Neovim plugins
 ```
 
 ## Available Commands

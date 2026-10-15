@@ -9,7 +9,7 @@ default:
 
 # Complete setup - runs all setup steps in order (non-interactive, idempotent)
 setup: init git mise
-    @./scripts/copy-files.sh --force --no-reload
+    @./scripts/copy-files.sh --force --no-reload --no-pull
     @echo "Setup complete! Restart your shell or run: exec zsh"
 
 # Initialize system dependencies (Homebrew, tools, oh-my-zsh)
